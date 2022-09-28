@@ -5,7 +5,13 @@
     <title>Mary's page</title>
 </head>
 <body>
-<h2>Mary is beautiful</h2>
-<div th:text="${name}"></div>
+<h2>Hello, <span th:utext="${name}"></span></h2>
+
+<h2>th:each</h2>
+<ul>
+    <th:block th:each="flower : ${flowers}">
+        <li th:utext="${flower}">..</li>
+    </th:block>
+</ul>
 </body>
 </html>
