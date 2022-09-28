@@ -2,10 +2,16 @@
 -- Please log an issue at https://redmine.postgresql.org/projects/pgadmin4/issues/new if you find any bugs, including reproduction steps.
 BEGIN;
 
+DROP TABLE IF EXISTS public."tblEmployeeRoles";
+DROP TABLE IF EXISTS public."tblEmployees";
+DROP TABLE IF EXISTS public."tblRoles";
+DROP TABLE IF EXISTS public."tblDepartments";
+
+CREATE SEQUENCE seq_depart_id;
 
 CREATE TABLE IF NOT EXISTS public."tblDepartments"
 (
-    depart_id integer NOT NULL,
+    depart_id bigint DEFAULT nextval('seq_depart_id') NOT NULL,
     depart_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT "tblDepartments_pkey" PRIMARY KEY (depart_id)
 );
@@ -17,9 +23,11 @@ CREATE TABLE IF NOT EXISTS public."tblEmployeeRoles"
     CONSTRAINT "tblEmployeeRoles_pkey" PRIMARY KEY (emp_id, role_id)
 );
 
+CREATE SEQUENCE seq_emp_id;
+
 CREATE TABLE IF NOT EXISTS public."tblEmployees"
 (
-    emp_id integer NOT NULL,
+    emp_id bigint DEFAULT nextval('seq_emp_id') NOT NULL,
     name character varying(30) COLLATE pg_catalog."default" NOT NULL,
     surname character varying(30) COLLATE pg_catalog."default" NOT NULL,
     sex character(1) COLLATE pg_catalog."default" NOT NULL,
@@ -30,9 +38,11 @@ CREATE TABLE IF NOT EXISTS public."tblEmployees"
     CONSTRAINT "tblEmployees_pkey" PRIMARY KEY (emp_id)
 );
 
+CREATE SEQUENCE seq_role_id;
+
 CREATE TABLE IF NOT EXISTS public."tblRoles"
 (
-    role_id integer NOT NULL,
+    role_id bigint DEFAULT nextval('seq_role_id')  NOT NULL,
     role character varying(30) COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT "tblRoles_pkey" PRIMARY KEY (role_id)
 );
