@@ -12,7 +12,7 @@ public class Department {
     @Column(name = "depart_id", unique = true, nullable = false)
     @SequenceGenerator(name = "pk_seq_depart", sequenceName = "seq_depart_id", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pk_seq_depart")
-    private long id;
+    private Long id;
 
     @Column(name = "depart_name", length = 50)
     private String name;
@@ -20,7 +20,7 @@ public class Department {
     public Department() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -28,7 +28,7 @@ public class Department {
         return name;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

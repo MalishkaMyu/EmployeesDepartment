@@ -14,7 +14,7 @@ public class Employee {
     @Column(name = "emp_id", unique = true, nullable = false)
     @SequenceGenerator(name = "pk_seq_emp", sequenceName = "seq_emp_id", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pk_seq_emp")
-    private long id;
+    private Long id;
 
     @Column(name = "name", length = 30)
     private String name;
@@ -40,7 +40,7 @@ public class Employee {
     private Department department = new Department();
 
     @ManyToMany
-    @JoinTable(name = "employee_roles",
+    @JoinTable(name = "employees_roles",
             joinColumns = @JoinColumn(name = "emp_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> employeeRoles;
@@ -48,11 +48,11 @@ public class Employee {
     public Employee() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -10,7 +10,7 @@ public class Role {
     @Column(name = "role_id", unique = true, nullable = false)
     @SequenceGenerator(name = "pk_seq_role", sequenceName = "seq_role_id", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pk_seq_role")
-    private long id;
+    private Long id;
 
     @Column(name = "role", length = 30)
     private String role;
@@ -18,11 +18,11 @@ public class Role {
     public Role() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
