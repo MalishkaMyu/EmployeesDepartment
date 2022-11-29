@@ -2,14 +2,19 @@ package com.samsolutions.employeesdep.model.entities;
 
 import com.samsolutions.employeesdep.model.converters.GenderConverter;
 import com.samsolutions.employeesdep.model.enums.Gender;
+import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
 @Table(name = "employees")
-public class Employee {
+@Getter
+@Setter
+@NoArgsConstructor
+public class Employee extends AbstractDatetimeEntity implements Serializable {
     @Id
     @Column(name = "emp_id", unique = true, nullable = false)
     @SequenceGenerator(name = "pk_seq_emp", sequenceName = "seq_emp_id", allocationSize = 1)
@@ -35,9 +40,12 @@ public class Employee {
     @Column(name = "pass_valid")
     private LocalDate passValid;
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    @Column(name = "employment_date")
+    private LocalDate employmentDate;
+
+    @ManyToOne(optional = false)
     @JoinColumn(name = "depart_id")
-    private Department department = new Department();
+    private Department department;
 
     @ManyToMany
     @JoinTable(name = "employees_roles",
@@ -45,78 +53,14 @@ public class Employee {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> employeeRoles;
 
-    public Employee() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
+    public Employee(String name, String surname, Gender sex, LocalDate birthDate, LocalDate employmentDate) {
         this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
         this.surname = surname;
-    }
-
-    public Gender getSex() {
-        return sex;
-    }
-
-    public void setSex(Gender sex) {
         this.sex = sex;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
-    }
-
-    public String getPassNumber() {
-        return passNumber;
-    }
-
-    public void setPassNumber(String passNumber) {
-        this.passNumber = passNumber;
-    }
-
-    public LocalDate getPassValid() {
-        return passValid;
-    }
-
-    public void setPassValid(LocalDate passValid) {
-        this.passValid = passValid;
-    }
-
-    public Department getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(Department department) {
-        this.department = department;
-    }
-
-    public Set<Role> getEmployeeRoles() {
-        return employeeRoles;
-    }
-
-    public void setEmployeeRoles(Set<Role> employeeRoles) {
-        this.employeeRoles = employeeRoles;
+        if (employmentDate != null)
+            this.employmentDate = employmentDate;
+        else
+            this.employmentDate = LocalDate.now();
     }
 }

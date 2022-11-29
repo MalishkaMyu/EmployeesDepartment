@@ -18,6 +18,9 @@ public class Role {
     public Role() {
     }
 
+    public Role(String role) {
+        this.role = role;
+    }
     public Long getId() {
         return id;
     }
@@ -32,5 +35,10 @@ public class Role {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    @Override
+    public String toString() {
+        return role;
     }
 }

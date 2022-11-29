@@ -1,15 +1,9 @@
-BEGIN;
 
-ALTER TABLE IF EXISTS public."tblDepartments"
+ALTER TABLE IF EXISTS "tblDepartments"
   RENAME TO "departments";
-ALTER TABLE IF EXISTS public."tblRoles"
+ALTER TABLE IF EXISTS "tblRoles"
   RENAME TO "roles";
-ALTER TABLE IF EXISTS public."tblEmployees"
+ALTER TABLE IF EXISTS "tblEmployees"
   RENAME TO "employees";
-ALTER TABLE IF EXISTS public."tblEmployeeRoles"
-  RENAME TO "employee_roles";
-
-ALTER TABLE IF EXISTS public."employees"
-  ALTER COLUMN "depart_id" TYPE bigint;
-
-END;
+ALTER TABLE IF EXISTS "tblEmployeeRoles"
+  RENAME TO "employees_roles";
