@@ -54,7 +54,6 @@ public class EmployeeRepositoryTest {
         for (String roleName : roleNames) {
             Role role = new Role(roleName);
             roleRepository.save(role);
-            //role.setId(roleId);
             roles.add(role);
         }
         emp1.setEmployeeRoles(roles);
@@ -82,17 +81,15 @@ public class EmployeeRepositoryTest {
                 LocalDate.of(2010, 1, 13), null);
         empNew.setDepartment(depart1);
         // creating and saving roles for the employee - two existing roles and one new
-        Set<Role> rolesToSave = new HashSet<>();
-        Role role;
+        Set<Role> subsetRoles = new HashSet<>(2);
         for (int i = 0; i < roles.size() - 1; i++) {
-            role = (Role) roles.toArray()[i];
-            roleRepository.save(role);
-            rolesToSave.add(role);
+            Role role = (Role) roles.toArray()[i];
+            subsetRoles.add(role);
         }
-        role = new Role("Cleaning");
-        roleRepository.save(role);
-        rolesToSave.add(role);
-        empNew.setEmployeeRoles(rolesToSave);
+        Role newRole = new Role("Cleaning");
+        roleRepository.save(newRole);
+        subsetRoles.add(newRole);
+        empNew.setEmployeeRoles(subsetRoles);
         Employee savedEmp = repository.save(empNew);
         // check
         assertEquals("Java Department", savedEmp.getDepartment().getName());
@@ -104,7 +101,7 @@ public class EmployeeRepositoryTest {
         assertEquals(1, departRepository.findAll().size());
         assertEquals(4, roleRepository.findAll().size());
         assertEquals(1, repository.findAll().size());
-        roleRepository.delete(role);
+        roleRepository.deleteById(newRole.getId());
     }
 
     @Test
@@ -115,11 +112,10 @@ public class EmployeeRepositoryTest {
         // update name and pass number
         readUpdEmp.setName("Losyash");
         readUpdEmp.setPassNumber("SH123456");
-        // setting the new roles - 2 old and 1 new
+        // setting the new roles - 2 old
         Set<Role> empRoles = new HashSet<>();
         for (int i = 0; i < roles.size() - 1; i++) {
             Role role = (Role) roles.toArray()[i];
-            roleRepository.save(role);
             empRoles.add(role);
         }
         readUpdEmp.setEmployeeRoles(empRoles);
@@ -165,12 +161,10 @@ public class EmployeeRepositoryTest {
     @Test
     public void testFindInDepartment() {
         // new Employee "Nyusha Smesharik" in the "Java Department"
-        Employee empNew = new Employee();
-        empNew.setName("Nyusha");
-        empNew.setSurname("Smesharik");
-        empNew.setSex(Gender.FEMALE);
+        Employee empNew = new Employee("Nyusha", "Smesharik", Gender.FEMALE,
+                LocalDate.of(2010, 1, 13), null);
         empNew.setDepartment(depart1);
-        empNew.setBirthDate(LocalDate.of(2010, 1, 13));
+        // 1 role
         Role role = new Role("Cleaning");
         roleRepository.save(role);
         Set<Role> rolesToSave = new HashSet<>();
@@ -182,7 +176,7 @@ public class EmployeeRepositoryTest {
         assertEquals(2, empInDepart.size());
         // delete the new employee
         repository.delete(savedEmp);
-        roleRepository.delete(role);
+        roleRepository.deleteById(role.getId());
     }
 
     @AfterEach
@@ -195,7 +189,7 @@ public class EmployeeRepositoryTest {
         assertEquals(0, departRepository.findAll().size());
         // ??? why does it not work with JpaRoleDao
         for (Role role : roles) {
-            roleRepository.delete(role);
+            roleRepository.deleteById(role.getId());
             //Role roleToDelete = roleRepository.find(role.getId()).get();
             //roleRepository.delete(roleToDelete);
         }
