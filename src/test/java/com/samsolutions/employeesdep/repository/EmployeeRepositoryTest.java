@@ -32,7 +32,6 @@ public class EmployeeRepositoryTest {
     private DepartmentRepository departRepository;
 
     @Autowired
-    //private RoleRepository roleRepository;
     private JpaRoleDao roleRepository;
 
     private Employee emp1;
@@ -187,11 +186,8 @@ public class EmployeeRepositoryTest {
         assertEquals(3, roleRepository.findAll().size());
         departRepository.delete(depart1);
         assertEquals(0, departRepository.findAll().size());
-        // ??? why does it not work with JpaRoleDao
         for (Role role : roles) {
             roleRepository.deleteById(role.getId());
-            //Role roleToDelete = roleRepository.find(role.getId()).get();
-            //roleRepository.delete(roleToDelete);
         }
         roles.clear();
         assertEquals(0, roleRepository.findAll().size());
