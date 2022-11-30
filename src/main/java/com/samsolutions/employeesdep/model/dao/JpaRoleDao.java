@@ -1,18 +1,16 @@
 package com.samsolutions.employeesdep.model.dao;
 
-import com.samsolutions.employeesdep.model.entities.Role;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.sql.DataSource;
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.transaction.Transactional;
+
+import org.springframework.stereotype.Repository;
+
+import com.samsolutions.employeesdep.model.entities.Role;
 
 @Repository
 public class JpaRoleDao implements Dao<Role>{
@@ -33,7 +31,8 @@ public class JpaRoleDao implements Dao<Role>{
     @Override
     @Transactional
     public Long save(Role role) {
-        Role savedRole = entityManager.merge(role);
+        entityManager.persist(role);
+        Role savedRole = entityManager.find(Role.class, role.getId());
         return savedRole.getId();
     }
 

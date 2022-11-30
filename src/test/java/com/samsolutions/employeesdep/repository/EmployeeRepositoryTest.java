@@ -1,5 +1,20 @@
 package com.samsolutions.employeesdep.repository;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
 import com.samsolutions.employeesdep.model.dao.JpaRoleDao;
 import com.samsolutions.employeesdep.model.entities.Department;
 import com.samsolutions.employeesdep.model.entities.Employee;
@@ -7,20 +22,6 @@ import com.samsolutions.employeesdep.model.entities.Role;
 import com.samsolutions.employeesdep.model.enums.Gender;
 import com.samsolutions.employeesdep.model.repository.DepartmentRepository;
 import com.samsolutions.employeesdep.model.repository.EmployeeRepository;
-import com.samsolutions.employeesdep.model.repository.RoleRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class EmployeeRepositoryTest {
@@ -31,8 +32,8 @@ public class EmployeeRepositoryTest {
     private DepartmentRepository departRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
-    //private JpaRoleDao roleRepository;
+    //private RoleRepository roleRepository;
+    private JpaRoleDao roleRepository;
 
     private Employee emp1;
     private Department depart1;
