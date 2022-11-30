@@ -1,4 +1,4 @@
-package com.samsolutions.employeesdep.model.daos;
+package com.samsolutions.employeesdep.model.dao;
 
 import com.samsolutions.employeesdep.model.entities.Role;
 import org.springframework.beans.factory.annotation.Autowired;

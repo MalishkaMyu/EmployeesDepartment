@@ -1,5 +1,6 @@
-package com.samsolutions.employeesdep.model.daos;
+package com.samsolutions.employeesdep.model.dao;
 
+import com.samsolutions.employeesdep.model.dao.JpaRoleDao;
 import com.samsolutions.employeesdep.model.entities.Role;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

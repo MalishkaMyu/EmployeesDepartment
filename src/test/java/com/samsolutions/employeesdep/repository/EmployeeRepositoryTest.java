@@ -1,6 +1,6 @@
 package com.samsolutions.employeesdep.repository;
 
-import com.samsolutions.employeesdep.model.daos.JpaRoleDao;
+import com.samsolutions.employeesdep.model.dao.JpaRoleDao;
 import com.samsolutions.employeesdep.model.entities.Department;
 import com.samsolutions.employeesdep.model.entities.Employee;
 import com.samsolutions.employeesdep.model.entities.Role;
