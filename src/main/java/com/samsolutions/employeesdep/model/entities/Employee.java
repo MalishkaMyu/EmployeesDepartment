@@ -7,6 +7,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -14,7 +15,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Employee extends AbstractDatetimeEntity implements Serializable {
+public class Employee extends AbstractDateTimeEntity implements Serializable {
     @Id
     @Column(name = "emp_id", unique = true, nullable = false)
     @SequenceGenerator(name = "pk_seq_emp", sequenceName = "seq_emp_id", allocationSize = 1)
@@ -58,6 +59,7 @@ public class Employee extends AbstractDatetimeEntity implements Serializable {
         this.surname = surname;
         this.sex = sex;
         this.birthDate = birthDate;
+        //this.employmentDate = (LocalDate) Objects.requireNonNullElseGet(employmentDate, LocalDate.now());
         if (employmentDate != null)
             this.employmentDate = employmentDate;
         else
