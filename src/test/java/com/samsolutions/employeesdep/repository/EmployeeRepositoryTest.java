@@ -36,7 +36,7 @@ public class EmployeeRepositoryTest {
 
     private Employee emp1;
     private Department depart1;
-    private Set<Role> roles = new HashSet<>();
+    private final Set<Role> roles = new HashSet<>();
 
     @BeforeEach
     public void setup() {
