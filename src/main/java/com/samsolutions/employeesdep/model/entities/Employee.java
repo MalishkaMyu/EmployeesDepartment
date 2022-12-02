@@ -59,10 +59,6 @@ public class Employee extends AbstractDateTimeEntity implements Serializable {
         this.surname = surname;
         this.sex = sex;
         this.birthDate = birthDate;
-        //this.employmentDate = (LocalDate) Objects.requireNonNullElseGet(employmentDate, LocalDate.now());
-        if (employmentDate != null)
-            this.employmentDate = employmentDate;
-        else
-            this.employmentDate = LocalDate.now();
+        this.employmentDate = Objects.requireNonNullElse(employmentDate, LocalDate.now());
     }
 }

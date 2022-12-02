@@ -4,6 +4,7 @@ import org.hibernate.tuple.GenerationTiming;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -17,6 +18,9 @@ public class Department implements Serializable {
 
     @Column(name = "depart_name", length = 50)
     private String name;
+
+    @OneToMany(mappedBy="department", cascade = CascadeType.REMOVE)
+    private List<Employee> departmentEmployees;
 
     public Department() {
     }
