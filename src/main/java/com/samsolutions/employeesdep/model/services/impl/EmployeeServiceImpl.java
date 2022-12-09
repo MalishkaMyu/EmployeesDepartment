@@ -50,6 +50,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public EmployeeDTO createEmployee(EmployeeDTO employeeToSaveDTO) {
         Employee employeeToSave = new EmployeeDTOToEntityConverter().convert(employeeToSaveDTO);
+        if (employeeToSave == null)
+            return null;
 
         Department departToSave;
         Long departID = employeeToSaveDTO.getDepartment().getId();
@@ -61,10 +63,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         } else {
             departToSave = departRepository.getReferenceById(departID);
         }
-        if (employeeToSave != null)
+        //if (employeeToSave != null)
             employeeToSave.setDepartment(departToSave);
-        else
-            return null;
+        //else
+        //    return null;
 
         // saving roles if new
         RoleDTOToEntityConverter roleDTOToEntityConverter = new RoleDTOToEntityConverter();
