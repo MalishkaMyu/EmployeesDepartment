@@ -4,7 +4,7 @@ import com.samsolutions.employeesdep.model.dto.RoleDTO;
 import com.samsolutions.employeesdep.model.entities.Role;
 import org.springframework.core.convert.converter.Converter;
 
-public class convertRoleEntityToDTO implements Converter<Role, RoleDTO> {
+public class RoleEntityToDTOConverter implements Converter<Role, RoleDTO> {
     @Override
     public RoleDTO convert(Role source) {
         RoleDTO target = new RoleDTO();

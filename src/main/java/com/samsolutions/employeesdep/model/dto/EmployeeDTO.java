@@ -9,7 +9,6 @@ import lombok.Setter;
 
 import javax.validation.constraints.Positive;
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import java.util.Set;
@@ -26,10 +25,11 @@ public class EmployeeDTO {
     private String passNumber;
     private LocalDate passValid;
     private LocalDate employmentDate;
-    @Positive
+
     private Long workExperience;
 
     private DepartmentDTO department;
+
     private Set<RoleDTO> employeeRoles;
 
     public EmployeeDTO(String name, String surname, Gender sex, LocalDate birthDate, LocalDate employmentDate) {
@@ -38,6 +38,6 @@ public class EmployeeDTO {
         this.sex = sex;
         this.birthDate = birthDate;
         this.employmentDate = Objects.requireNonNullElse(employmentDate, LocalDate.now());
-        this.workExperience = ChronoUnit.YEARS.between(employmentDate, LocalDate.now());
+        this.workExperience = ChronoUnit.YEARS.between(this.employmentDate, LocalDate.now());
     }
 }
