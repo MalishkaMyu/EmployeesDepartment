@@ -53,20 +53,15 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employeeToSave == null)
             return null;
 
-        Department departToSave;
-        Long departID = employeeToSaveDTO.getDepartment().getId();
         // saving department if new
-        if (departID == null) {
-            //departToSave = new DepartmentDTOToEntityConverter().convert(employeeToSaveDTO.getDepartment());
+        Department departToSave;
+        if (employeeToSaveDTO.getDepartment().getId() == null) {
             departToSave = new Department(employeeToSaveDTO.getDepartment().getName());
             departRepository.save(departToSave);
         } else {
-            departToSave = departRepository.getReferenceById(departID);
+            departToSave = departRepository.getReferenceById(employeeToSaveDTO.getDepartment().getId());
         }
-        //if (employeeToSave != null)
-            employeeToSave.setDepartment(departToSave);
-        //else
-        //    return null;
+        employeeToSave.setDepartment(departToSave);
 
         // saving roles if new
         RoleDTOToEntityConverter roleDTOToEntityConverter = new RoleDTOToEntityConverter();
@@ -81,6 +76,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             }
         }
         employeeToSave.setEmployeeRoles(rolesToSave);
+
         // saving employee
         empRepository.save(employeeToSave);
         // convert employee entity back to DTO to have all IDs

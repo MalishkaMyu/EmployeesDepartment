@@ -34,8 +34,6 @@ public class EmployeeServiceTest {
     private final List<Long> listIDs = new ArrayList<>();
     private final static RoleDTO[] allRoles = {new RoleDTO("Java Programmer"), new RoleDTO(".NET programmer"),
             new RoleDTO("Tester"), new RoleDTO("Project manager"), new RoleDTO("coffee drinker")};
-    private static DepartmentDTO depart1 = new DepartmentDTO("Java Department");
-    private static DepartmentDTO depart2 = new DepartmentDTO(".NET Department");
 
     private void updateRoles(Set<RoleDTO> savedRoles) {
         for (RoleDTO savedRole : savedRoles) {
@@ -51,6 +49,8 @@ public class EmployeeServiceTest {
     @BeforeEach
     public void setup() {
         EmployeeDTO empToSave, savedEmp;
+        DepartmentDTO depart1 = new DepartmentDTO("Java Department");
+        DepartmentDTO depart2 = new DepartmentDTO(".NET Department");
         // creating and saving employee 1
         Set<RoleDTO> roles1 = Set.of(allRoles[0], allRoles[2], allRoles[4]); // Java-Roles
         empToSave = new EmployeeDTO("Krosh", "Smesharik", Gender.MALE,
@@ -85,7 +85,6 @@ public class EmployeeServiceTest {
         savedEmp = empService.createEmployee(empToSave);
         if (savedEmp.getId() != null) {
             listIDs.add(savedEmp.getId());
-            depart2 = savedEmp.getDepartment();
             updateRoles(savedEmp.getEmployeeRoles());
         }
         assertEquals(3, listIDs.size());
