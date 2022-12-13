@@ -16,4 +16,6 @@ public interface Dao<T> {
     void delete(T t);
 
     void deleteById(Long id);
+
+    int deleteAll();
 }

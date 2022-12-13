@@ -19,9 +19,6 @@ public class Department implements Serializable {
     @Column(name = "depart_name", length = 50)
     private String name;
 
-    @OneToMany(mappedBy="department", cascade = CascadeType.REMOVE)
-    private List<Employee> departmentEmployees;
-
     public Department() {
     }
 

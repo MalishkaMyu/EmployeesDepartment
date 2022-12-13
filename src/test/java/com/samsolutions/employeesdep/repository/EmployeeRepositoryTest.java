@@ -186,9 +186,10 @@ public class EmployeeRepositoryTest {
         assertEquals(3, roleRepository.findAll().size());
         departRepository.delete(depart1);
         assertEquals(0, departRepository.findAll().size());
-        for (Role role : roles) {
+        /*for (Role role : roles) {
             roleRepository.deleteById(role.getId());
-        }
+        }*/
+        int cntRoles = roleRepository.deleteAll();
         roles.clear();
         assertEquals(0, roleRepository.findAll().size());
     }
