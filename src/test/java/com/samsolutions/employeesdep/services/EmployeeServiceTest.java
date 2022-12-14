@@ -12,12 +12,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static com.samsolutions.employeesdep.model.services.EmployeeService.EMPLOYEES_ON_PAGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -99,12 +102,15 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    public void findAllEmployees() {
-        List<EmployeeDTO> employees = empService.getEmployeesToDepartment("");
-        assertEquals(3, employees.size());
+    public void findAllEmployeesWithPages() {
+        // first page
+        List<EmployeeDTO> employees = empService.getEmployeesToDepartment("", 0, 2);
+        assertEquals(2, employees.size());
         assertEquals("Krosh", employees.get(0).getName());
         assertEquals("Nyusha", employees.get(1).getName());
-        assertEquals("Pin", employees.get(2).getName());
+        // second page
+        employees = empService.getEmployeesToDepartment("", 1, 2);
+        assertEquals("Pin", employees.get(0).getName());
     }
 
     @AfterEach

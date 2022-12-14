@@ -12,7 +12,10 @@ import com.samsolutions.employeesdep.model.entities.Role;
 import com.samsolutions.employeesdep.model.repository.DepartmentRepository;
 import com.samsolutions.employeesdep.model.repository.EmployeeRepository;
 import com.samsolutions.employeesdep.model.services.EmployeeService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -32,18 +35,36 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private JpaRoleDao roleRepository;
 
+    public List<EmployeeDTO> getEmployeesToDepartmentCommon(String departName, int page, int pageSize) {
+        Pageable paging = PageRequest.of(page, pageSize);
+        EmployeeEntityToDTOConverter employeeEntityToDTOConverter = new EmployeeEntityToDTOConverter();
+        if (StringUtils.isBlank(departName)) {
+            return empRepository.findAll(paging).stream() //stream from list
+                    .map(employeeEntityToDTOConverter::convert) //convert every element
+                    .collect(Collectors.toList());
+        } else {
+            return empRepository.findInDepartment(departName, paging).stream() //stream from list
+                    .map(employeeEntityToDTOConverter::convert) //convert every element
+                    .collect(Collectors.toList());
+        }
+    }
+
     @Override
     @Transactional
     public List<EmployeeDTO> getEmployeesToDepartment(String departName) {
-        EmployeeEntityToDTOConverter employeeEntityToDTOConverter = new EmployeeEntityToDTOConverter();
-        if (departName.equals(""))
-            return empRepository.findAll().stream() //stream from list
-                    .map(employeeEntityToDTOConverter::convert) //convert every element
-                    .collect(Collectors.toList());
-        else
-            return empRepository.findInDepartment(departName).stream() //stream from list
-                    .map(employeeEntityToDTOConverter::convert) //convert every element
-                    .collect(Collectors.toList());
+        return getEmployeesToDepartmentCommon(departName, 0, EMPLOYEES_ON_PAGE);
+    }
+
+    @Override
+    @Transactional
+    public List<EmployeeDTO> getEmployeesToDepartment(String departName, int page) {
+        return getEmployeesToDepartmentCommon(departName, page, EMPLOYEES_ON_PAGE);
+    }
+
+    @Override
+    @Transactional
+    public List<EmployeeDTO> getEmployeesToDepartment(String departName, int page, int pageSize) {
+        return getEmployeesToDepartmentCommon(departName, page, pageSize);
     }
 
     @Override

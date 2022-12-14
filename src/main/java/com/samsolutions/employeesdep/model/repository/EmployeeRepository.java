@@ -3,6 +3,7 @@ package com.samsolutions.employeesdep.model.repository;
 import com.samsolutions.employeesdep.model.entities.Department;
 import com.samsolutions.employeesdep.model.entities.Employee;
 import com.samsolutions.employeesdep.model.entities.Role;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,6 +18,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     @Query("select e from Employee e join e.department d where d.name = :department order by e.surname, e.name")
     List<Employee> findInDepartment(@Param("department") String department);
+
+    @Query("select e from Employee e join e.department d where d.name = :department order by e.surname, e.name")
+    List<Employee> findInDepartment(@Param("department") String department, Pageable paging);
 
     @Query("select count(r) from Employee e left join e.employeeRoles r where e.id = :emp_id")
     //@Query("select SIZE(e.employeeRoles) from Employee e where e.id = :emp_id")
