@@ -8,13 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.test.annotation.Rollback;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static java.util.Optional.empty;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @SpringBootTest
 public class DepartmentRepositoryTest {
@@ -59,6 +60,6 @@ public class DepartmentRepositoryTest {
     public void tearDown() {
         repository.deleteById(depart1.getId());
         repository.delete(depart2);
-        assertEquals(0, repository.findAll().size());
+        assertThat(repository.findAll(), is(empty()));
     }
 }

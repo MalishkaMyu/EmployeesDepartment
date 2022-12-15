@@ -160,13 +160,14 @@ public class EmployeeRepositoryTest {
     @Test
     public void testFindInDepartment() {
         // new Employee "Nyusha Smesharik" in the "Java Department"
+        LocalDate employmentDate = null;
         Employee empNew = new Employee("Nyusha", "Smesharik", Gender.FEMALE,
-                LocalDate.of(2010, 1, 13), null);
+                LocalDate.of(2010, 1, 13), employmentDate);
         empNew.setDepartment(depart1);
         // 1 role
         Role role = new Role("Cleaning");
         roleRepository.save(role);
-        Set<Role> rolesToSave = new HashSet<>();
+        Set<Role> rolesToSave = new HashSet<>(1);
         rolesToSave.add(role);
         empNew.setEmployeeRoles(rolesToSave);
         // saving the new employee. There are 2 employees in the "Java Department" now
@@ -186,9 +187,6 @@ public class EmployeeRepositoryTest {
         assertEquals(3, roleRepository.findAll().size());
         departRepository.delete(depart1);
         assertEquals(0, departRepository.findAll().size());
-        /*for (Role role : roles) {
-            roleRepository.deleteById(role.getId());
-        }*/
         int cntRoles = roleRepository.deleteAll();
         roles.clear();
         assertEquals(0, roleRepository.findAll().size());

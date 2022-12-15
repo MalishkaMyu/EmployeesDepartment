@@ -1,14 +1,26 @@
 package com.samsolutions.employeesdep.model.entities;
 
-import org.hibernate.tuple.GenerationTiming;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.springframework.lang.NonNull;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.GenerationType;
 import java.io.Serializable;
-import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "departments")
+@Getter
+@Setter
+@NoArgsConstructor
+@RequiredArgsConstructor
 public class Department implements Serializable {
     @Id
     @Column(name = "depart_id", unique = true, nullable = false)
@@ -17,28 +29,6 @@ public class Department implements Serializable {
     private Long id;
 
     @Column(name = "depart_name", length = 50)
+    @NonNull
     private String name;
-
-    public Department() {
-    }
-
-    public Department(String name) {
-        this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }
