@@ -19,6 +19,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     List<Employee> findInDepartment(@Param("department") String department);
 
     @Query("select count(r) from Employee e left join e.employeeRoles r where e.id = :emp_id")
-    //@Query("select SIZE(e.employeeRoles) from Employee e where e.id = :emp_id")
     int countRolesOfEmployee(@Param("emp_id") Long id);
 }

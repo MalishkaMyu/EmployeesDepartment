@@ -6,6 +6,7 @@ import com.samsolutions.employeesdep.model.entities.Employee;
 import com.samsolutions.employeesdep.model.entities.Role;
 import com.samsolutions.employeesdep.model.repository.DepartmentRepository;
 import com.samsolutions.employeesdep.model.repository.EmployeeRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,7 @@ public class EmployeeService {
     private JpaRoleDao roleRepository;
 
     public List<Employee> getEmployeesToDepartment(String departName) {
-        if (departName.equals(""))
+        if (StringUtils.isBlank(departName))
             return empRepository.findAll();
         else
             return empRepository.findInDepartment(departName);
