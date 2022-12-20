@@ -2,14 +2,35 @@ package com.samsolutions.employeesdep.model.entities;
 
 import com.samsolutions.employeesdep.model.converters.GenderConverter;
 import com.samsolutions.employeesdep.model.enums.Gender;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.lang.NonNull;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Convert;
+import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.GenerationType;
+
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "employees")
-public class Employee {
+@Getter
+@Setter
+@NoArgsConstructor
+public class Employee extends AbstractDateTimeEntity implements Serializable {
     @Id
     @Column(name = "emp_id", unique = true, nullable = false)
     @SequenceGenerator(name = "pk_seq_emp", sequenceName = "seq_emp_id", allocationSize = 1)
@@ -17,27 +38,34 @@ public class Employee {
     private Long id;
 
     @Column(name = "name", length = 30)
+    @NonNull
     private String name;
 
     @Column(name = "surname", length = 30)
+    @NonNull
     private String surname;
 
     @Column(name = "sex")
     @Convert(converter = GenderConverter.class)
+    @NonNull
     private Gender sex;
 
     @Column(name = "birth_date")
+    @NonNull
     private LocalDate birthDate;
 
     @Column(name = "pass_no")
     private String passNumber;
 
     @Column(name = "pass_valid")
-    private LocalDate passValid;
+    private LocalDate passValidity;
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    @Column(name = "employment_date")
+    private LocalDate employmentDate;
+
+    @ManyToOne(optional = false)
     @JoinColumn(name = "depart_id")
-    private Department department = new Department();
+    private Department department;
 
     @ManyToMany
     @JoinTable(name = "employees_roles",
@@ -45,78 +73,11 @@ public class Employee {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> employeeRoles;
 
-    public Employee() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
+    public Employee(String name, String surname, Gender sex, LocalDate birthDate, LocalDate employmentDate) {
         this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
         this.surname = surname;
-    }
-
-    public Gender getSex() {
-        return sex;
-    }
-
-    public void setSex(Gender sex) {
         this.sex = sex;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
-    }
-
-    public String getPassNumber() {
-        return passNumber;
-    }
-
-    public void setPassNumber(String passNumber) {
-        this.passNumber = passNumber;
-    }
-
-    public LocalDate getPassValid() {
-        return passValid;
-    }
-
-    public void setPassValid(LocalDate passValid) {
-        this.passValid = passValid;
-    }
-
-    public Department getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(Department department) {
-        this.department = department;
-    }
-
-    public Set<Role> getEmployeeRoles() {
-        return employeeRoles;
-    }
-
-    public void setEmployeeRoles(Set<Role> employeeRoles) {
-        this.employeeRoles = employeeRoles;
+        this.employmentDate = Objects.requireNonNullElse(employmentDate, LocalDate.now());
     }
 }
