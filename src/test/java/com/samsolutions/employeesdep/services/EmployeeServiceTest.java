@@ -12,15 +12,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static com.samsolutions.employeesdep.model.services.EmployeeService.EMPLOYEES_ON_PAGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -35,10 +32,8 @@ public class EmployeeServiceTest {
     private JpaRoleDao roleRepository;
 
     private final List<Long> listIDs = new ArrayList<>();
-    private final static RoleDTO[] allRoles = {new RoleDTO("Java Programmer"), new RoleDTO(".NET programmer"),
-            new RoleDTO("Tester"), new RoleDTO("Project manager"), new RoleDTO("coffee drinker")};
 
-    private void updateRoles(Set<RoleDTO> savedRoles) {
+    private void updateRoles(RoleDTO[] allRoles, Set<RoleDTO> savedRoles) {
         for (RoleDTO savedRole : savedRoles) {
             for (RoleDTO role : allRoles) {
                 if (role.getRole().equals(savedRole.getRole())) {
@@ -54,6 +49,8 @@ public class EmployeeServiceTest {
         EmployeeDTO empToSave, savedEmp;
         DepartmentDTO depart1 = new DepartmentDTO("Java Department");
         DepartmentDTO depart2 = new DepartmentDTO(".NET Department");
+        RoleDTO[] allRoles = {new RoleDTO("Java Programmer"), new RoleDTO(".NET programmer"),
+                new RoleDTO("Tester"), new RoleDTO("Project manager"), new RoleDTO("coffee drinker")};
         // creating and saving employee 1
         Set<RoleDTO> roles1 = Set.of(allRoles[0], allRoles[2], allRoles[4]); // Java-Roles
         empToSave = new EmployeeDTO("Krosh", "Smesharik", Gender.MALE,
@@ -65,7 +62,7 @@ public class EmployeeServiceTest {
         if (savedEmp.getId() != null) {
             listIDs.add(savedEmp.getId());
             depart1 = savedEmp.getDepartment();
-            updateRoles(savedEmp.getEmployeeRoles());
+            updateRoles(allRoles, savedEmp.getEmployeeRoles());
         }
         // creating and saving employee 2
         Set<RoleDTO> roles2 = Set.of(allRoles[3], allRoles[4]); // PM-roles
@@ -76,7 +73,7 @@ public class EmployeeServiceTest {
         savedEmp = empService.createEmployee(empToSave);
         if (savedEmp.getId() != null) {
             listIDs.add(savedEmp.getId());
-            updateRoles(savedEmp.getEmployeeRoles());
+            updateRoles(allRoles, savedEmp.getEmployeeRoles());
         }
         // creating and saving employee 3
         Set<RoleDTO> roles3 = Set.of(allRoles[1]); // .NET roles
@@ -88,7 +85,7 @@ public class EmployeeServiceTest {
         savedEmp = empService.createEmployee(empToSave);
         if (savedEmp.getId() != null) {
             listIDs.add(savedEmp.getId());
-            updateRoles(savedEmp.getEmployeeRoles());
+            updateRoles(allRoles, savedEmp.getEmployeeRoles());
         }
         assertEquals(3, listIDs.size());
     }
@@ -104,12 +101,13 @@ public class EmployeeServiceTest {
     @Test
     public void findAllEmployeesWithPages() {
         // first page
-        List<EmployeeDTO> employees = empService.getEmployeesToDepartment("", 0, 2);
+        List<EmployeeDTO> employees = empService.getAllEmployees();
         assertEquals(2, employees.size());
         assertEquals("Krosh", employees.get(0).getName());
         assertEquals("Nyusha", employees.get(1).getName());
         // second page
-        employees = empService.getEmployeesToDepartment("", 1, 2);
+        employees = empService.getAllEmployees(1);
+        assertEquals(1, employees.size());
         assertEquals("Pin", employees.get(0).getName());
     }
 
@@ -119,5 +117,6 @@ public class EmployeeServiceTest {
             empService.deleteEmployeeById(id);
         listIDs.clear();
         departRepository.deleteAll();
+        roleRepository.deleteAll();
     }
 }
