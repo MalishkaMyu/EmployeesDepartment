@@ -1,42 +1,20 @@
 package com.samsolutions.employeesdep.model.services;
 
-import com.samsolutions.employeesdep.model.dao.JpaRoleDao;
-import com.samsolutions.employeesdep.model.entities.Department;
-import com.samsolutions.employeesdep.model.entities.Employee;
-import com.samsolutions.employeesdep.model.entities.Role;
-import com.samsolutions.employeesdep.model.repository.DepartmentRepository;
-import com.samsolutions.employeesdep.model.repository.EmployeeRepository;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.samsolutions.employeesdep.model.dto.EmployeeDTO;
+import org.springframework.data.domain.Pageable;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
-@Service
-public class EmployeeService {
-    @Autowired
-    private EmployeeRepository empRepository;
+public interface EmployeeService {
+    List<EmployeeDTO> getEmployeesToDepartment(String departName);
 
-    @Autowired
-    private DepartmentRepository departRepository;
+    List<EmployeeDTO> getEmployeesToDepartment(String departName, int page);
 
-    @Autowired
-    private JpaRoleDao roleRepository;
+    List<EmployeeDTO> getAllEmployees();
 
-    public List<Employee> getEmployeesToDepartment(String departName) {
-        if (StringUtils.isBlank(departName))
-            return empRepository.findAll();
-        else
-            return empRepository.findInDepartment(departName);
-    }
+    List<EmployeeDTO> getAllEmployees(int page);
 
-    public Employee saveEmployee(Employee employeeToSave) {
-        Department departToSave = employeeToSave.getDepartment();
-        departRepository.save(departToSave);
-        for (Role role:employeeToSave.getEmployeeRoles()) {
-            roleRepository.save(role);
-        }
-        return empRepository.save(employeeToSave);
-    }
+    EmployeeDTO createEmployee(EmployeeDTO employeeToSaveDTO);
+
+    void deleteEmployeeById(Long employeeId);
 }
