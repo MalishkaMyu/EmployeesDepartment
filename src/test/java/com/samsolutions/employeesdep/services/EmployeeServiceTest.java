@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class EmployeeServiceTest {
@@ -51,6 +52,7 @@ public class EmployeeServiceTest {
         DepartmentDTO depart2 = new DepartmentDTO(".NET Department");
         RoleDTO[] allRoles = {new RoleDTO("Java Programmer"), new RoleDTO(".NET programmer"),
                 new RoleDTO("Tester"), new RoleDTO("Project manager"), new RoleDTO("coffee drinker")};
+
         // creating and saving employee 1
         Set<RoleDTO> roles1 = Set.of(allRoles[0], allRoles[2], allRoles[4]); // Java-Roles
         empToSave = new EmployeeDTO("Krosh", "Smesharik", Gender.MALE,
@@ -64,6 +66,7 @@ public class EmployeeServiceTest {
             depart1 = savedEmp.getDepartment();
             updateRoles(allRoles, savedEmp.getEmployeeRoles());
         }
+
         // creating and saving employee 2
         Set<RoleDTO> roles2 = Set.of(allRoles[3], allRoles[4]); // PM-roles
         empToSave = new EmployeeDTO("Nyusha", "Smesharik", Gender.FEMALE,
@@ -75,6 +78,7 @@ public class EmployeeServiceTest {
             listIDs.add(savedEmp.getId());
             updateRoles(allRoles, savedEmp.getEmployeeRoles());
         }
+
         // creating and saving employee 3
         Set<RoleDTO> roles3 = Set.of(allRoles[1]); // .NET roles
         empToSave = new EmployeeDTO("Pin", "Smesharik", Gender.MALE,
@@ -105,6 +109,7 @@ public class EmployeeServiceTest {
         assertEquals(2, employees.size());
         assertEquals("Krosh", employees.get(0).getName());
         assertEquals("Nyusha", employees.get(1).getName());
+
         // second page
         employees = empService.getAllEmployees(1);
         assertEquals(1, employees.size());
@@ -113,8 +118,9 @@ public class EmployeeServiceTest {
 
     @AfterEach
     public void tearDown() {
-        for (Long id : listIDs)
-            empService.deleteEmployeeById(id);
+        for (Long id : listIDs) {
+            assertTrue(empService.deleteEmployeeById(id));
+        }
         listIDs.clear();
         departRepository.deleteAll();
         roleRepository.deleteAll();

@@ -10,12 +10,6 @@ public class EmployeeDTOToEntityConverter implements Converter<EmployeeDTO, Empl
     public Employee convert(EmployeeDTO source) {
         Employee target = new Employee();
         BeanUtils.copyProperties(source,target);
-        //target.setDepartment(new DepartmentDTOToEntityConverter().convert(source.getDepartment()));
-        /*Set<Role> targetRoles = new HashSet<>();
-        for (RoleDTO roleDTO:source.getEmployeeRoles())  {
-            targetRoles.add(new convertRoleDTOToEntity().convert(roleDTO));
-        }
-        target.setEmployeeRoles(targetRoles);*/
         return target;
     }
 }
