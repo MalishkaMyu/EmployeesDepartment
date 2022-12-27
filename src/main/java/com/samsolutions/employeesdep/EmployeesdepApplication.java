@@ -1,6 +1,9 @@
 package com.samsolutions.employeesdep;
 
+import com.samsolutions.employeesdep.model.entities.User;
+import com.samsolutions.employeesdep.model.repository.UserRepository;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -21,12 +24,22 @@ public class EmployeesdepApplication {
 		return new BCryptPasswordEncoder();
 	}
 
+	@Autowired
+	private UserRepository userRepository;
+
 	@PostConstruct
 	public void generateAdminPassword() {
-		int length = 10;
-		boolean useLetters = true;
-		boolean useNumbers = true;
-		String generatedString = RandomStringUtils.random(length, useLetters, useNumbers);
-		System.out.println(generatedString);
+		User userAdmin = userRepository.findByLogin("admin");
+		if (userAdmin.getId() != null && userAdmin.getPasswordHash().isBlank()) {
+			// generate password for user 'admin'
+			int length = 10;
+			boolean useLetters = true;
+			boolean useNumbers = true;
+			String generatedPassword = RandomStringUtils.random(length, useLetters, useNumbers);
+			System.out.println("Remember generated password for user 'admin':" + generatedPassword);
+			//String passwordHash = encoder().encode(generatedPassword);
+			//userAdmin.setPasswordHash(passwordHash);
+			userRepository.saveAndFlush(userAdmin);
+		}
 	}
 }

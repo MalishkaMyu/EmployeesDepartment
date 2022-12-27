@@ -16,10 +16,6 @@ ALTER TABLE IF EXISTS "employees"
     DROP COLUMN created_at;
 ALTER TABLE IF EXISTS "employees"
     DROP COLUMN updated_at;
---ALTER TABLE IF EXISTS "employees"
---    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
---ALTER TABLE IF EXISTS "employees"
---    ALTER COLUMN updated_at SET DEFAULT CURRENT_TIMESTAMP;
 ALTER TABLE IF EXISTS "employees"
     ADD COLUMN user_id bigint NOT NULL;
 ALTER TABLE IF EXISTS "employees"
