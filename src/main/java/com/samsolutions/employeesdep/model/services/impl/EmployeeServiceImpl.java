@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
+
     @Value("${employees.per.page}")
     private int employeesPerPage;
 
@@ -122,8 +123,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public void deleteEmployeeById(Long employeeId) {
-        if (empRepository.existsById(employeeId))
-            empRepository.deleteById(employeeId); // how to know whether delete was successful???
+    public boolean deleteEmployeeById(Long employeeId) {
+        if (empRepository.existsById(employeeId)) {
+            empRepository.deleteById(employeeId);
+
+            return !empRepository.existsById(employeeId);
+        } else
+            return false;
     }
 }
