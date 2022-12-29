@@ -33,4 +33,4 @@ CREATE INDEX IF NOT EXISTS "fki_employees_fkey_user"
 
 INSERT INTO "users"(
 	login,password,email)
-	VALUES ('admin','','admin@gmail.com');
+	VALUES ('$$$admin_login$$$','','$$$admin_email$$$');

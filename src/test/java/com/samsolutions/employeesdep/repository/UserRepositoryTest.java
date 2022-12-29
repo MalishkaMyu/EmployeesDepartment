@@ -1,14 +1,15 @@
 package com.samsolutions.employeesdep.repository;
 
+import com.samsolutions.employeesdep.config.MyPasswordEncoder;
 import com.samsolutions.employeesdep.model.entities.User;
 import com.samsolutions.employeesdep.model.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +18,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class UserRepositoryTest {
+
+    @Value("${spring.flyway.placeholders.admin_login}")
+    private String adminLogin;
+    @Value("${spring.flyway.placeholders.admin_email}")
+    private String adminEmail;
+
     @Autowired
-    private PasswordEncoder encoder;
+    private MyPasswordEncoder encoder;
 
     @Autowired
     private UserRepository userRepository;
@@ -28,10 +35,12 @@ public class UserRepositoryTest {
     @BeforeEach
     public void setup() {
         User userToSave, savedUser;
-        String passwordHash;
+        String password,passwordHash;
+
+        // saving of user "mary"
         userToSave = new User("mary", "maliska_myu@mail.ru");
-        passwordHash = encoder.encode("marypwd123");
-        userToSave.setPasswordHash(passwordHash);
+        password = "marypwd123";
+        userToSave.setPasswordHash(encoder.encode(password));
         userRepository.save(userToSave);
         if (userToSave.getId() != null) {
             listIDs.add(userToSave.getId());
@@ -39,12 +48,14 @@ public class UserRepositoryTest {
                 savedUser = userRepository.findById(userToSave.getId()).get();
                 assertEquals("mary", savedUser.getLogin());
                 assertEquals("maliska_myu@mail.ru", savedUser.getEmail());
-                assertEquals(passwordHash, savedUser.getPasswordHash());
+                assertTrue(encoder.matches(password, savedUser.getPasswordHash()));
             }
         }
+
+        // saving of user "queen"
         userToSave = new User("queen", "queen@gmail.com");
-        passwordHash = encoder.encode("queenpwd444");
-        userToSave.setPasswordHash(passwordHash);
+        password = "queenpwd444";
+        userToSave.setPasswordHash(encoder.encode(password));
         userRepository.save(userToSave);
         if (userToSave.getId() != null) {
             listIDs.add(userToSave.getId());
@@ -52,18 +63,32 @@ public class UserRepositoryTest {
                 savedUser = userRepository.findById(userToSave.getId()).get();
                 assertEquals("queen", savedUser.getLogin());
                 assertEquals("queen@gmail.com", savedUser.getEmail());
-                assertEquals(passwordHash, savedUser.getPasswordHash());
+                assertTrue(encoder.matches(password, savedUser.getPasswordHash()));
              }
         }
     }
 
     @Test
     void testFindByLoginAdmin() {
-        User admin = userRepository.findByLogin("admin");
+        User admin = userRepository.findByLogin(adminLogin);
         if (admin.getId() != null) {
-            assertEquals("admin", admin.getLogin());
-            assertEquals("admin@gmail.com", admin.getEmail());
+            assertEquals(adminLogin, admin.getLogin());
+            assertEquals(adminEmail, admin.getEmail());
         }
+    }
+
+    @Test
+    void testExistByEmail() {
+        assertTrue(userRepository.existsByEmail(adminEmail));
+        assertTrue(userRepository.existsByEmail("maliska_myu@mail.ru"));
+        assertFalse(userRepository.existsByEmail("krosh@mail.ru"));
+    }
+
+    @Test
+    void testExistByLogin() {
+        assertTrue(userRepository.existsByLogin(adminLogin));
+        assertTrue(userRepository.existsByLogin("mary"));
+        assertFalse(userRepository.existsByLogin("crocodile"));
     }
 
     @Test

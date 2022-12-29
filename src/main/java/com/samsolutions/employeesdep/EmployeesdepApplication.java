@@ -1,14 +1,13 @@
 package com.samsolutions.employeesdep;
 
+import com.samsolutions.employeesdep.config.MyPasswordEncoder;
 import com.samsolutions.employeesdep.model.entities.User;
 import com.samsolutions.employeesdep.model.repository.UserRepository;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.PostConstruct;
 
@@ -19,17 +18,18 @@ public class EmployeesdepApplication {
 		SpringApplication.run(EmployeesdepApplication.class, args);
 	}
 
-	@Bean
-	public PasswordEncoder encoder() {
-		return new BCryptPasswordEncoder();
-	}
+	@Value("${spring.flyway.placeholders.admin_login}")
+	private String adminLogin;
+
+	@Autowired
+    private MyPasswordEncoder encoder;
 
 	@Autowired
 	private UserRepository userRepository;
 
 	@PostConstruct
 	public void generateAdminPassword() {
-		User userAdmin = userRepository.findByLogin("admin");
+		User userAdmin = userRepository.findByLogin(adminLogin);
 		if (userAdmin.getId() != null && userAdmin.getPasswordHash().isBlank()) {
 			// generate password for user 'admin'
 			int length = 10;
@@ -37,8 +37,8 @@ public class EmployeesdepApplication {
 			boolean useNumbers = true;
 			String generatedPassword = RandomStringUtils.random(length, useLetters, useNumbers);
 			System.out.println("Remember generated password for user 'admin':" + generatedPassword);
-			//String passwordHash = encoder().encode(generatedPassword);
-			//userAdmin.setPasswordHash(passwordHash);
+			String passwordHash = encoder.encode(generatedPassword);
+			userAdmin.setPasswordHash(passwordHash);
 			userRepository.saveAndFlush(userAdmin);
 		}
 	}

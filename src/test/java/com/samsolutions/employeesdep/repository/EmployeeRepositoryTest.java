@@ -147,13 +147,15 @@ public class EmployeeRepositoryTest {
     }
 
     @Test
-    public void testFindByName() {
-        Employee readEmp = repository.findByName("Krosh", "Smesharik");
-        assertEquals("Krosh", readEmp.getName());
-        assertEquals("Smesharik", readEmp.getSurname());
-        assertEquals("Java Department", readEmp.getDepartment().getName());
-
-        readEmp = repository.findByName("Nyusha", "Smesharik");
+    public void testFindByNameAndSurname() {
+        Employee readEmp;
+        if (repository.existsByNameAndSurname("Krosh", "Smesharik")) {
+            readEmp = repository.findByNameAndSurname("Krosh", "Smesharik");
+            assertEquals("Krosh", readEmp.getName());
+            assertEquals("Smesharik", readEmp.getSurname());
+            assertEquals("Java Department", readEmp.getDepartment().getName());
+        }
+        readEmp = repository.findByNameAndSurname("Nyusha", "Smesharik");
         assertNull(readEmp);
     }
 
