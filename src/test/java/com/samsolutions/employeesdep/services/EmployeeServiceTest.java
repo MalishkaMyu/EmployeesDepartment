@@ -1,16 +1,22 @@
 package com.samsolutions.employeesdep.services;
 
+import com.samsolutions.employeesdep.config.MyPasswordEncoder;
+import com.samsolutions.employeesdep.exception.EntityDuplicateException;
 import com.samsolutions.employeesdep.model.dao.JpaRoleDao;
 import com.samsolutions.employeesdep.model.dto.DepartmentDTO;
 import com.samsolutions.employeesdep.model.dto.EmployeeDTO;
 import com.samsolutions.employeesdep.model.dto.RoleDTO;
+import com.samsolutions.employeesdep.model.dto.UserDTO;
+import com.samsolutions.employeesdep.model.entities.User;
 import com.samsolutions.employeesdep.model.enums.Gender;
 import com.samsolutions.employeesdep.model.repository.DepartmentRepository;
+import com.samsolutions.employeesdep.model.repository.UserRepository;
 import com.samsolutions.employeesdep.model.services.EmployeeService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
@@ -18,11 +24,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class EmployeeServiceTest {
+    @Value("${spring.flyway.placeholders.admin_login}")
+    private String adminLogin;
+
     @Autowired
     private EmployeeService empService;
 
@@ -31,6 +39,12 @@ public class EmployeeServiceTest {
 
     @Autowired
     private JpaRoleDao roleRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private MyPasswordEncoder encoder;
 
     private final List<Long> listIDs = new ArrayList<>();
 
@@ -48,16 +62,20 @@ public class EmployeeServiceTest {
     @BeforeEach
     public void setup() {
         EmployeeDTO empToSave, savedEmp;
+        UserDTO userToSave;
         DepartmentDTO depart1 = new DepartmentDTO("Java Department");
         DepartmentDTO depart2 = new DepartmentDTO(".NET Department");
         RoleDTO[] allRoles = {new RoleDTO("Java Programmer"), new RoleDTO(".NET programmer"),
-                new RoleDTO("Tester"), new RoleDTO("Project manager"), new RoleDTO("coffee drinker")};
+                new RoleDTO("Tester"), new RoleDTO("Project manager"), new RoleDTO("coffee drinker")
+        };
 
         // creating and saving employee 1
         Set<RoleDTO> roles1 = Set.of(allRoles[0], allRoles[2], allRoles[4]); // Java-Roles
         empToSave = new EmployeeDTO("Krosh", "Smesharik", Gender.MALE,
                 LocalDate.of(2010, 10, 11),
                 LocalDate.of(2020, 7, 20));
+        userToSave = new UserDTO("krosh", "kroshpwd", "krosh@gmail.com");
+        empToSave.setUser(userToSave);
         empToSave.setDepartment(depart1);
         empToSave.setEmployeeRoles(roles1);
         savedEmp = empService.createEmployee(empToSave);
@@ -71,6 +89,8 @@ public class EmployeeServiceTest {
         Set<RoleDTO> roles2 = Set.of(allRoles[3], allRoles[4]); // PM-roles
         empToSave = new EmployeeDTO("Nyusha", "Smesharik", Gender.FEMALE,
                 LocalDate.of(2010, 1, 13), null);
+        userToSave = new UserDTO("nyusha", "nyushapwd", "nyusha@gmail.com");
+        empToSave.setUser(userToSave);
         empToSave.setDepartment(depart1);
         empToSave.setEmployeeRoles(roles2);
         savedEmp = empService.createEmployee(empToSave);
@@ -84,6 +104,8 @@ public class EmployeeServiceTest {
         empToSave = new EmployeeDTO("Pin", "Smesharik", Gender.MALE,
                 LocalDate.of(2008, 8, 21),
                 LocalDate.of(2020, 3, 3));
+        userToSave = new UserDTO("pin", "pinpwd123$", "pin@mail.ru");
+        empToSave.setUser(userToSave);
         empToSave.setDepartment(depart2);
         empToSave.setEmployeeRoles(roles3);
         savedEmp = empService.createEmployee(empToSave);
@@ -108,12 +130,51 @@ public class EmployeeServiceTest {
         List<EmployeeDTO> employees = empService.getAllEmployees();
         assertEquals(2, employees.size());
         assertEquals("Krosh", employees.get(0).getName());
+        assertEquals("krosh", employees.get(0).getUser().getLogin());
         assertEquals("Nyusha", employees.get(1).getName());
+        assertEquals("nyusha@gmail.com", employees.get(1).getUser().getEmail());
+        assertTrue(encoder.matches("nyushapwd", employees.get(1).getUser().getPasswordHash()));
 
         // second page
         employees = empService.getAllEmployees(1);
         assertEquals(1, employees.size());
         assertEquals("Pin", employees.get(0).getName());
+    }
+
+    @Test
+    public void updateEmployee() {
+        Long empId = listIDs.get(2);
+        EmployeeDTO empToSave = empService.getEmployeeById(empId);
+        if (empToSave != null) {
+            assertEquals("Pin", empToSave.getName());
+            // updating fields
+            empToSave.setSurname("Penguin");
+            empToSave.setEmploymentDate(LocalDate.of(2023, 1, 1));
+            // 1 new role
+            empToSave.getEmployeeRoles().add(new RoleDTO("Administrator"));
+            // new password
+            UserDTO userToSave = empToSave.getUser();
+            userToSave.setPassword("newpinpassword");
+            empToSave.setUser(userToSave);
+            EmployeeDTO savedEmployee = empService.updateEmployee(empToSave);
+            assertEquals("Penguin", savedEmployee.getSurname());
+            assertTrue(encoder.matches("newpinpassword", savedEmployee.getUser().getPasswordHash()));
+            assertEquals(2, savedEmployee.getEmployeeRoles().size());
+        }
+    }
+
+    @Test
+    public void updateEmployeeDuplicateByNameException() {
+        Long empId = listIDs.get(2);
+        EmployeeDTO empToSave = empService.getEmployeeById(empId);
+        if (empToSave != null) {
+            assertEquals("Pin", empToSave.getName());
+            empToSave.setName("Nyusha");
+            empToSave.setSurname("Smesharik");
+            assertThrows(EntityDuplicateException.class, () ->
+                empService.updateEmployee(empToSave),
+                "EntityDuplicateException was expected.");
+        }
     }
 
     @AfterEach
@@ -122,6 +183,11 @@ public class EmployeeServiceTest {
             assertTrue(empService.deleteEmployeeById(id));
         }
         listIDs.clear();
+        // delete all users except "admin"
+        for (User user : userRepository.findAll()) {
+            if (!user.getLogin().equals(adminLogin))
+                userRepository.deleteById(user.getId());
+        }
         departRepository.deleteAll();
         roleRepository.deleteAll();
     }

@@ -1,8 +1,6 @@
 package com.samsolutions.employeesdep.model.repository;
 
-import com.samsolutions.employeesdep.model.entities.Department;
 import com.samsolutions.employeesdep.model.entities.Employee;
-import com.samsolutions.employeesdep.model.entities.Role;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,8 +11,6 @@ import java.util.List;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-    //@Query("select e from Employee e where e.name = :name and e.surname = :surname")
-    //Employee findByName(@Param("name") String name, @Param("surname") String surname);
 
     Employee findByNameAndSurname(String name, String surname);
 

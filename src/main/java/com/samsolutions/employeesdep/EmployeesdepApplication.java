@@ -29,17 +29,19 @@ public class EmployeesdepApplication {
 
 	@PostConstruct
 	public void generateAdminPassword() {
-		User userAdmin = userRepository.findByLogin(adminLogin);
-		if (userAdmin.getId() != null && userAdmin.getPasswordHash().isBlank()) {
-			// generate password for user 'admin'
-			int length = 10;
-			boolean useLetters = true;
-			boolean useNumbers = true;
-			String generatedPassword = RandomStringUtils.random(length, useLetters, useNumbers);
-			System.out.println("Remember generated password for user 'admin':" + generatedPassword);
-			String passwordHash = encoder.encode(generatedPassword);
-			userAdmin.setPasswordHash(passwordHash);
-			userRepository.saveAndFlush(userAdmin);
+		if (userRepository.existsByLogin(adminLogin)) {
+			User userAdmin = userRepository.findByLogin(adminLogin).orElse(null);
+			if (userAdmin != null && userAdmin.getPasswordHash().isBlank()) {
+				// generate password for user 'admin'
+				int length = 10;
+				boolean useLetters = true;
+				boolean useNumbers = true;
+				String generatedPassword = RandomStringUtils.random(length, useLetters, useNumbers);
+				System.out.println("Remember generated password for user '" + adminLogin + "':" + generatedPassword);
+				String passwordHash = encoder.encode(generatedPassword);
+				userAdmin.setPasswordHash(passwordHash);
+				userRepository.saveAndFlush(userAdmin);
+			}
 		}
 	}
 }

@@ -70,10 +70,12 @@ public class UserRepositoryTest {
 
     @Test
     void testFindByLoginAdmin() {
-        User admin = userRepository.findByLogin(adminLogin);
-        if (admin.getId() != null) {
-            assertEquals(adminLogin, admin.getLogin());
-            assertEquals(adminEmail, admin.getEmail());
+        if (userRepository.existsByLogin(adminLogin)) {
+            User admin = userRepository.findByLogin(adminLogin).orElse(null);
+            if (admin != null) {
+                assertEquals(adminLogin, admin.getLogin());
+                assertEquals(adminEmail, admin.getEmail());
+            }
         }
     }
 

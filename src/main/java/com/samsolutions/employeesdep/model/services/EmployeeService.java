@@ -10,11 +10,15 @@ public interface EmployeeService {
 
     List<EmployeeDTO> getEmployeesToDepartment(String departName, int page);
 
+    EmployeeDTO getEmployeeById(Long employeeId);
+
     List<EmployeeDTO> getAllEmployees();
 
     List<EmployeeDTO> getAllEmployees(int page);
 
     EmployeeDTO createEmployee(EmployeeDTO employeeToSaveDTO);
+
+    EmployeeDTO updateEmployee(EmployeeDTO employeeToSaveDTO);
 
     boolean deleteEmployeeById(Long employeeId);
 }
