@@ -75,6 +75,7 @@ public class UserServiceImpl implements UserService {
             throw new EntityNotFoundException("There is no user with ID " + userToSave.getId() + ".");
         }
         // reading current user information from database
+        //User existingUser = userRepository.getReferenceById(userToSave.getId());
         User existingUser = userRepository.getReferenceById(userToSave.getId());
         // check whether new login already has the another user
         if (userRepository.existsByLogin(userToSave.getLogin()) &&

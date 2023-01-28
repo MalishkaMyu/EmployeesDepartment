@@ -21,6 +21,7 @@ public class UserRepositoryTest {
 
     @Value("${spring.flyway.placeholders.admin_login}")
     private String adminLogin;
+
     @Value("${spring.flyway.placeholders.admin_email}")
     private String adminEmail;
 
@@ -120,10 +121,14 @@ public class UserRepositoryTest {
 
     @AfterEach
     public void tearDown() {
-        for (Long id : listIDs) {
+        /*for (Long id : listIDs) {
             userRepository.deleteById(id);
-        }
+        }*/
+        userRepository.deleteByLoginNot(adminLogin);
+        //Predicate predicate = User.login.Not(adminLogin);
         listIDs.clear();
-        assertEquals(1, userRepository.findAll().size());
+        List<User> all = userRepository.findAll();
+        all.forEach(System.out::println);
+        assertEquals(1, all.size());
     }
 }

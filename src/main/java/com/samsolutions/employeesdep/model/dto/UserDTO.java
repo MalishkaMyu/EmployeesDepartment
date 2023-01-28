@@ -1,5 +1,6 @@
 package com.samsolutions.employeesdep.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,7 @@ public class UserDTO {
     private Long id;
     private String login;
     private String password;
+    @JsonIgnore
     private String passwordHash;
     private String email;
 

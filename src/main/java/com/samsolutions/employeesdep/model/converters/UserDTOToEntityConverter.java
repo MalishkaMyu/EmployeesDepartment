@@ -10,7 +10,7 @@ public class UserDTOToEntityConverter implements Converter<UserDTO, User> {
     public User convert(UserDTO source) {
         User target = new User();
         BeanUtils.copyProperties(source, target,"passwordHash");
-        if (!source.getPasswordHash().isBlank())
+        if (source.getPasswordHash() != null && !source.getPasswordHash().isBlank())
             target.setPasswordHash(source.getPasswordHash());
         return target;
     }

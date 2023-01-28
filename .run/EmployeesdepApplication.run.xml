@@ -2,7 +2,7 @@
   <configuration default="false" name="EmployeesdepApplication" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="com.samsolutions.employeesdep.EmployeesdepApplication" />
     <module name="employeesdep.main" />
-    <option name="VM_PARAMETERS" value="-Dspring.security.user.password=1 -Dspring.datasource.password=1111" />
+    <option name="VM_PARAMETERS" value="-Dspring.datasource.password=1111" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.samsolutions.employeesdep.*" />

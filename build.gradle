@@ -30,7 +30,6 @@ dependencies {
 	// SwaggerUI ( http://localhost:8080/swagger-ui/index.html )
 	implementation 'org.springdoc:springdoc-openapi-ui:1.6.11'
 
-
 	runtimeOnly 'org.postgresql:postgresql'
 
 	// Lombok
@@ -45,6 +44,9 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 
 	testRuntimeOnly 'com.h2database:h2'
+
+	// https://mvnrepository.com/artifact/com.querydsl/querydsl-core
+	implementation 'com.querydsl:querydsl-core:4.1.0'
 }
 
 tasks.named('test') {
