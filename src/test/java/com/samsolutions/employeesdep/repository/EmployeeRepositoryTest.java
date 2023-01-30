@@ -10,7 +10,12 @@ import com.samsolutions.employeesdep.model.enums.Gender;
 import com.samsolutions.employeesdep.model.repository.DepartmentRepository;
 import com.samsolutions.employeesdep.model.repository.EmployeeRepository;
 import com.samsolutions.employeesdep.model.repository.UserRepository;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,7 +26,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -201,16 +208,18 @@ public class EmployeeRepositoryTest {
             Set<Role> rolesToSave = Set.of(role);
             empNew.setEmployeeRoles(rolesToSave);
         }
-
         // reading user and assign it to employee
         if (userRepository.existsByLogin("nyusha")) {
             User userNyusha = userRepository.findByLogin("nyusha").orElse(null);
             empNew.setUser(userNyusha);
         }
-        // saving the new employee. There are 2 employees in the "Java Department" now
+        // saving the new employee
         Employee savedEmp = repository.save(empNew);
+
+        // There are 2 employees in the "Java Department" now
         List<Employee> empInDepart = repository.findInDepartment("Java Department");
         assertEquals(2, empInDepart.size());
+
         // delete the new employee
         repository.delete(savedEmp);
     }

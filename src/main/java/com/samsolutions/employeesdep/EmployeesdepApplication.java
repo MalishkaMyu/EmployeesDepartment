@@ -14,34 +14,34 @@ import javax.annotation.PostConstruct;
 @SpringBootApplication
 public class EmployeesdepApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(EmployeesdepApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(EmployeesdepApplication.class, args);
+    }
 
-	@Value("${spring.flyway.placeholders.admin_login}")
-	private String adminLogin;
+    @Value("${spring.flyway.placeholders.admin_login}")
+    private String adminLogin;
 
-	@Autowired
+    @Autowired
     private MyPasswordEncoder encoder;
 
-	@Autowired
-	private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-	@PostConstruct
-	public void generateAdminPassword() {
-		if (userRepository.existsByLogin(adminLogin)) {
-			User userAdmin = userRepository.findByLogin(adminLogin).orElse(null);
-			if (userAdmin != null && userAdmin.getPasswordHash().isBlank()) {
-				// generate password for user 'admin'
-				int length = 10;
-				boolean useLetters = true;
-				boolean useNumbers = true;
-				String generatedPassword = RandomStringUtils.random(length, useLetters, useNumbers);
-				System.out.println("Remember generated password for user '" + adminLogin + "':" + generatedPassword);
-				String passwordHash = encoder.encode(generatedPassword);
-				userAdmin.setPasswordHash(passwordHash);
-				userRepository.saveAndFlush(userAdmin);
-			}
-		}
-	}
+    @PostConstruct
+    public void generateAdminPassword() {
+        if (userRepository.existsByLogin(adminLogin)) {
+            User userAdmin = userRepository.findByLogin(adminLogin).orElse(null);
+            if (userAdmin != null && userAdmin.getPasswordHash().isBlank()) {
+                // generate password for user 'admin'
+                int length = 10;
+                boolean useLetters = true;
+                boolean useNumbers = true;
+                String generatedPassword = RandomStringUtils.random(length, useLetters, useNumbers);
+                System.out.println("Remember generated password for user '" + adminLogin + "':" + generatedPassword);
+                String passwordHash = encoder.encode(generatedPassword);
+                userAdmin.setPasswordHash(passwordHash);
+                userRepository.saveAndFlush(userAdmin);
+            }
+        }
+    }
 }

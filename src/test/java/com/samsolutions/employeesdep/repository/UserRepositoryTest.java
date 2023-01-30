@@ -14,7 +14,9 @@ import org.springframework.data.domain.Sort;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class UserRepositoryTest {
@@ -80,14 +82,14 @@ public class UserRepositoryTest {
     }
 
     @Test
-    void testExistByEmail() {
+    void testExistsByEmail() {
         assertTrue(userRepository.existsByEmail(adminEmail));
         assertTrue(userRepository.existsByEmail("maliska_myu@mail.ru"));
         assertFalse(userRepository.existsByEmail("krosh@mail.ru"));
     }
 
     @Test
-    void testExistByLogin() {
+    void testExistsByLogin() {
         assertTrue(userRepository.existsByLogin(adminLogin));
         assertTrue(userRepository.existsByLogin("mary"));
         assertFalse(userRepository.existsByLogin("crocodile"));

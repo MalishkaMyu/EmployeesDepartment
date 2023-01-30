@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 
 @Component
 public class TestDataHelper {
+    
     @Autowired
     private JdbcTemplate jdbcTemplate;
 

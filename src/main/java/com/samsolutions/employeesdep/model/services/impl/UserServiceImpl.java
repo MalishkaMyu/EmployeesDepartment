@@ -98,8 +98,9 @@ public class UserServiceImpl implements UserService {
         // saving user
         userRepository.save(userToSave);
         UserDTO savedUserDTO = new UserEntityToDTOConverter().convert(userToSave);
-        if (savedUserDTO != null)
+        if (savedUserDTO != null) {
             savedUserDTO.setPassword(userToSaveDTO.getPassword());
+        }
         return savedUserDTO;
     }
 
