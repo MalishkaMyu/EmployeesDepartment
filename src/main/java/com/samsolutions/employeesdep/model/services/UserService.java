@@ -5,6 +5,7 @@ import com.samsolutions.employeesdep.model.dto.UserDTO;
 import java.util.List;
 
 public interface UserService {
+
     UserDTO createUser(UserDTO userToSaveDTO);
 
     UserDTO updateUser(UserDTO userToSaveDTO);

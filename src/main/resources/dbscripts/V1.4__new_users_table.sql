@@ -12,6 +12,8 @@ CREATE TABLE IF NOT EXISTS "users"
     CONSTRAINT "users_unique_login" UNIQUE (login),
     CONSTRAINT "users_unique_email" UNIQUE (email)
 );
+-- deleting of columns 'created_at', 'updated_at' is necessary, because
+-- in postgres the operation 'add column after' is impossible
 ALTER TABLE IF EXISTS "employees"
     DROP COLUMN created_at;
 ALTER TABLE IF EXISTS "employees"

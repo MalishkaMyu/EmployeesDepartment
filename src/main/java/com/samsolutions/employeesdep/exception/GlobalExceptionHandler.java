@@ -10,8 +10,7 @@ import java.util.Locale;
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(EmployeesdepGlobalException.class)
-    @SuppressWarnings("rawtypes")
-    protected ResponseEntity handleGlobalException(EmployeesdepGlobalException employeesdepGlobalException, Locale locale) {
+    protected ResponseEntity<Object> handleGlobalException(EmployeesdepGlobalException employeesdepGlobalException, Locale locale) {
         return ResponseEntity
                 .badRequest()
                 .body(ErrorResponse.builder()
@@ -21,8 +20,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({Exception.class})
-    @SuppressWarnings("rawtypes")
-    protected ResponseEntity handleException(Exception e, Locale locale) {
+    protected ResponseEntity<Object> handleException(Exception e, Locale locale) {
         return ResponseEntity
                 .badRequest()
                 .body("Exception occur inside API " + e);

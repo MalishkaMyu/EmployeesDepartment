@@ -105,7 +105,6 @@ public class UserServiceTest {
         }
     }
 
-
     @Test
     public void findAllUsersWithPages() {
         // first page
