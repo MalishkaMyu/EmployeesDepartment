@@ -2,26 +2,28 @@ package com.samsolutions.employeesdep.controllers.rest;
 
 import com.samsolutions.employeesdep.model.dto.UserDTO;
 import com.samsolutions.employeesdep.model.services.UserService;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-public class UserControllerUnitTest {
+@AutoConfigureMockMvc
+public class UserControllerMockTest {
 
     private final List<UserDTO> testUsers = new ArrayList<>();
 
@@ -31,12 +33,11 @@ public class UserControllerUnitTest {
     @Autowired
     private UserController userController;
 
+    @Autowired
     private MockMvc mockMvc;
 
     @BeforeEach
     public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(userController)
-                .build();
 
         UserDTO userDTO = new UserDTO("krosh", "kroshpwd123", "krosh@sam-solutions.com");
         testUsers.add(0, userDTO);
@@ -44,19 +45,21 @@ public class UserControllerUnitTest {
         testUsers.add(1, userDTO);
         userDTO = new UserDTO("pin", "pinpwd789", "pin@gmail.com");
         testUsers.add(2, userDTO);
+
+        when(userService.getAllUsers()).thenReturn(testUsers);
     }
 
     @Test
-    public void TestReadAll() throws Exception {
-        Mockito.when(userService.getAllUsers()).thenReturn(testUsers);
+    @WithMockUser(username = "test_user", password = "test_pwd") // see test application.properties
+    public void testReadAll() throws Exception {
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/api/users")
+                        get("/api/users")
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.size()", Matchers.is(3)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].login", Matchers.is("krosh")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].login", Matchers.is("nyusha")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[2].login", Matchers.is("pin")));
+                .andExpect(jsonPath("$.size()", is(3)))
+                .andExpect(jsonPath("$[0].login", is("krosh")))
+                .andExpect(jsonPath("$[1].login", is("nyusha")))
+                .andExpect(jsonPath("$[2].login", is("pin")));
     }
 }
