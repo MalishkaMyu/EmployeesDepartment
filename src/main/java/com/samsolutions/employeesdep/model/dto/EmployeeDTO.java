@@ -1,13 +1,10 @@
 package com.samsolutions.employeesdep.model.dto;
 
-import com.samsolutions.employeesdep.model.entities.Department;
-import com.samsolutions.employeesdep.model.entities.Role;
 import com.samsolutions.employeesdep.model.enums.Gender;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.Positive;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
@@ -27,6 +24,8 @@ public class EmployeeDTO {
     private LocalDate employmentDate;
 
     private Long workExperience;
+
+    private UserDTO user;
 
     private DepartmentDTO department;
 

@@ -19,6 +19,7 @@ public class EmployeeEntityToDTOConverter implements Converter<Employee, Employe
         BeanUtils.copyProperties(source, target);
         target.setWorkExperience(ChronoUnit.YEARS.between(target.getEmploymentDate(), LocalDate.now()));
         target.setDepartment(new DepartmentEntityToDTOConverter().convert(source.getDepartment()));
+        target.setUser(new UserEntityToDTOConverter().convert(source.getUser()));
         Set<RoleDTO> targetRoles = new HashSet<>();
         RoleEntityToDTOConverter roleEntityToDTOConverter = new RoleEntityToDTOConverter();
         for (Role role : source.getEmployeeRoles()) {
