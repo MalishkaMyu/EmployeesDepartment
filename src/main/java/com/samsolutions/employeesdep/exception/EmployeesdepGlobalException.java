@@ -10,8 +10,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmployeesdepGlobalException extends RuntimeException {
-    private String code;
     private String message;
+    private String code;
+    private String objectName;
 
     public EmployeesdepGlobalException(String message) {
         super(message);

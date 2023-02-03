@@ -1,5 +1,6 @@
 package com.samsolutions.employeesdep.exception;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -9,14 +10,24 @@ import java.util.Locale;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
     @ExceptionHandler(EmployeesdepGlobalException.class)
     protected ResponseEntity<Object> handleGlobalException(EmployeesdepGlobalException employeesdepGlobalException, Locale locale) {
-        return ResponseEntity
-                .badRequest()
-                .body(ErrorResponse.builder()
+        HttpStatus status = switch (employeesdepGlobalException.getCode()) {
+            case GlobalErrorCode.ERROR_ENTITY_NOT_FOUND:
+                yield HttpStatus.NOT_FOUND;
+            case GlobalErrorCode.ERROR_ENTITY_DUPLICATE:
+                yield HttpStatus.CONFLICT;
+            default:
+                yield HttpStatus.BAD_REQUEST;
+        };
+
+        return new ResponseEntity<>(
+                ErrorResponse.builder()
                         .code(employeesdepGlobalException.getCode())
+                        .objectName(employeesdepGlobalException.getObjectName())
                         .message(employeesdepGlobalException.getMessage())
-                        .build());
+                        .build(), status);
     }
 
     @ExceptionHandler({Exception.class})

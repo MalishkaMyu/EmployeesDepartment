@@ -27,14 +27,23 @@ public class UserController {
         final UserDTO createdUser = userService.createUser(user);
         return createdUser != null
                 ? new ResponseEntity<>(createdUser, HttpStatus.CREATED)
-                : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+                : new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
     @GetMapping(value = "/users")
     public ResponseEntity<List<UserDTO>> read() {
         final List<UserDTO> users = userService.getAllUsers();
 
-        return users != null &&  !users.isEmpty()
+        return users != null && !users.isEmpty()
+                ? new ResponseEntity<>(users, HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping(value = "/users/page={page}")
+    public ResponseEntity<List<UserDTO>> read(@PathVariable(name = "page") int page) {
+        final List<UserDTO> users = userService.getAllUsers(page);
+
+        return users != null && !users.isEmpty()
                 ? new ResponseEntity<>(users, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -42,26 +51,23 @@ public class UserController {
     @GetMapping(value = "/users/{id}")
     public ResponseEntity<UserDTO> read(@PathVariable(name = "id") Long id) {
         final UserDTO user = userService.getUserById(id);
-
         return user != null
                 ? new ResponseEntity<>(user, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PutMapping(value = "/users/{id}")
-    public ResponseEntity<?> update(@PathVariable(name = "id") Long id, @RequestBody UserDTO user) {
+    public ResponseEntity<UserDTO> update(@PathVariable(name = "id") Long id, @RequestBody UserDTO user) {
         user.setId(id);
         final UserDTO updatedUser = userService.updateUser(user);
-
         return updatedUser != null
                 ? new ResponseEntity<>(updatedUser, HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+                : new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
     @DeleteMapping(value = "/users/{id}")
     public ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
         final boolean deleted = userService.deleteUserById(id);
-
         return deleted
                 ? new ResponseEntity<>(HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
