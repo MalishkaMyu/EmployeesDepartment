@@ -12,7 +12,7 @@ import lombok.Setter;
 public class EmployeesdepGlobalException extends RuntimeException {
     private String message;
     private String code;
-    private String objectName;
+    private Class<?> objectClass;
 
     public EmployeesdepGlobalException(String message) {
         super(message);

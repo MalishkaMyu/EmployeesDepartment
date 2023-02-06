@@ -42,19 +42,19 @@ public class UserServiceImpl implements UserService {
             // user with ID is already exists
             throw new EntityDuplicateException(
                     "The User with ID " + userToSave.getId() + " already exists and can not be created.",
-                    User.class.getSimpleName());
+                    User.class);
         }
         if (userRepository.existsByLogin(userToSave.getLogin())) {
             // login is already exists
             throw new EntityDuplicateException(
                     "The login " + userToSave.getLogin() + " is already registered. Please choose another login.",
-                    User.class.getSimpleName());
+                    User.class);
         }
         if (userRepository.existsByEmail(userToSave.getEmail())) {
             // email is already exists
             throw new EntityDuplicateException(
                     "The email " + userToSave.getEmail() + " is already registered. Please choose another email.",
-                    User.class.getSimpleName());
+                    User.class);
         }
         if (!userToSaveDTO.getPassword().isBlank())
             userToSave.setPasswordHash(encoder.encode(userToSaveDTO.getPassword()));
@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
         if (userToSaveDTO.getId() == null || !userRepository.existsById(userToSave.getId())) {
             // user is not still exists
             throw new EntityNotFoundException("There is no user with ID " + userToSave.getId() + ".",
-                    User.class.getSimpleName());
+                    User.class);
         }
         // reading current user information from database
         //User existingUser = userRepository.getReferenceById(userToSave.getId());
@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
             // user with the new login is already exists
             throw new EntityDuplicateException(
                     "The login " + userToSave.getLogin() + " is already registered for another user. " +
-                            "Please choose another login.", User.class.getSimpleName());
+                            "Please choose another login.", User.class);
         }
         // check whether new email already has the another user
         if (userRepository.existsByEmail(userToSave.getEmail()) &&
@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService {
             // user with the new email is already exists
             throw new EntityDuplicateException(
                     "The email " + userToSave.getEmail() + " is already registered for another user. " +
-                            "Please choose another email.", User.class.getSimpleName());
+                            "Please choose another email.", User.class);
         }
 
         // encoding password
@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService {
         }
         else
             throw new EntityNotFoundException("There is no User with login " + userLogin,
-                    User.class.getSimpleName());
+                    User.class);
     }
 
     @Override
@@ -130,7 +130,7 @@ public class UserServiceImpl implements UserService {
         }
         else {
             throw new EntityNotFoundException("There is no User with ID " + userId,
-                    User.class.getSimpleName());
+                    User.class);
         }
     }
 
@@ -143,7 +143,7 @@ public class UserServiceImpl implements UserService {
         }
         else {
             throw new EntityNotFoundException("There is no User with ID " + userId + " to delete.",
-                    User.class.getSimpleName());
+                    User.class);
         }
     }
 

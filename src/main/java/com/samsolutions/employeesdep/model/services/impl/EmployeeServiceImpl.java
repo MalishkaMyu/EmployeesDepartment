@@ -82,7 +82,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         else
             throw new EntityNotFoundException("There is no Employee with ID " + employeeId,
-                    Employee.class.getSimpleName());
+                    Employee.class);
 
     }
 
@@ -118,7 +118,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             // employee with ID is already exists
             throw new EntityDuplicateException(
                     "The employee with ID " + employeeToSave.getId() + " already exists and can not be created.",
-                    Employee.class.getSimpleName());
+                    Employee.class);
         }
         // check whether employee with the name already exists
         if (empRepository.existsByNameAndSurname(employeeToSave.getName(), employeeToSave.getSurname())) {
@@ -126,7 +126,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new EntityDuplicateException(
                     "The employee " + employeeToSave.getName() + " " + employeeToSave.getSurname() +
                     " is already registered. Please choose another name.",
-                    Employee.class.getSimpleName());
+                    Employee.class);
         }
 
         // saving department if new
@@ -174,7 +174,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employeeToSave.getId() == null || !empRepository.existsById(employeeToSave.getId())) {
             // employee is not still exists
             throw new EntityNotFoundException("There is no employee with ID " + employeeToSave.getId(),
-                    Employee.class.getSimpleName());
+                    Employee.class);
         }
         // reading current employee information from database
         Employee existingEmployee = empRepository.findById(employeeToSave.getId()).orElse(null);
@@ -187,7 +187,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new EntityDuplicateException(
                     "The employee with the name " + employeeToSave.getName() + " " + employeeToSave.getSurname() +
                             " is already registered. Please choose another name.",
-                    Employee.class.getSimpleName());
+                    Employee.class);
         }
 
         // saving department if new
@@ -239,6 +239,6 @@ public class EmployeeServiceImpl implements EmployeeService {
             return !empRepository.existsById(employeeId);
         } else
             throw new EntityNotFoundException("There is no Employee with ID " + employeeId + " to delete.",
-                    Employee.class.getSimpleName());
+                    Employee.class);
     }
 }

@@ -22,12 +22,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 yield HttpStatus.BAD_REQUEST;
         };
 
-        return new ResponseEntity<>(
-                ErrorResponse.builder()
-                        .code(employeesdepGlobalException.getCode())
-                        .objectName(employeesdepGlobalException.getObjectName())
-                        .message(employeesdepGlobalException.getMessage())
-                        .build(), status);
+        if ((employeesdepGlobalException.getObjectClass() != null)) {
+            return new ResponseEntity<>(
+                    ErrorResponse.builder()
+                            .code(employeesdepGlobalException.getCode())
+                            .objectName(employeesdepGlobalException.getObjectClass().getSimpleName())
+                            .message(employeesdepGlobalException.getMessage())
+                            .build(), status);
+        } else {
+            return new ResponseEntity<>(
+                    ErrorResponse.builder()
+                            .code(employeesdepGlobalException.getCode())
+                            .message(employeesdepGlobalException.getMessage())
+                            .build(), status);
+        }
+
     }
 
     @ExceptionHandler({Exception.class})
