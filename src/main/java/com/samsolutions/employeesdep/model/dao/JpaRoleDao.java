@@ -1,19 +1,17 @@
 package com.samsolutions.employeesdep.model.dao;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import com.samsolutions.employeesdep.model.entities.Role;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
-
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Repository;
-
-import com.samsolutions.employeesdep.model.entities.Role;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Slf4j
@@ -24,6 +22,17 @@ public class JpaRoleDao implements Dao<Role> {
     @Override
     public Optional<Role> find(Long id) {
         return Optional.ofNullable(entityManager.find(Role.class, id));
+    }
+
+    public Optional<Role> findByRole(String role) {
+        String query = "SELECT r FROM Role r where role = :role";
+        List<Role> roles = castRolesList(Role.class, entityManager.createQuery(query)
+                .setParameter("role", role)
+                .getResultList());
+        if (roles.size() > 0)
+            return Optional.ofNullable(roles.get(0));
+        else
+            return Optional.empty();
     }
 
     @Override

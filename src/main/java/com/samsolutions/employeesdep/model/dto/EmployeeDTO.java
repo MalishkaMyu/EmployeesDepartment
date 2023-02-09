@@ -20,7 +20,7 @@ public class EmployeeDTO {
     private Gender sex;
     private LocalDate birthDate;
     private String passNumber;
-    private LocalDate passValid;
+    private LocalDate passValidity;
     private LocalDate employmentDate;
 
     private Long workExperience;

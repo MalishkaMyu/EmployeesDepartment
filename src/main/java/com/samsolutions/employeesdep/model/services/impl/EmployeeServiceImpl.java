@@ -4,7 +4,6 @@ import com.samsolutions.employeesdep.exception.EntityDuplicateException;
 import com.samsolutions.employeesdep.exception.EntityNotFoundException;
 import com.samsolutions.employeesdep.model.converters.EmployeeDTOToEntityConverter;
 import com.samsolutions.employeesdep.model.converters.EmployeeEntityToDTOConverter;
-import com.samsolutions.employeesdep.model.converters.RoleDTOToEntityConverter;
 import com.samsolutions.employeesdep.model.converters.UserDTOToEntityConverter;
 import com.samsolutions.employeesdep.model.dao.JpaRoleDao;
 import com.samsolutions.employeesdep.model.dto.EmployeeDTO;
@@ -132,24 +131,30 @@ public class EmployeeServiceImpl implements EmployeeService {
         // saving department if new
         Department departToSave;
         if (employeeToSaveDTO.getDepartment().getId() == null) {
-            departToSave = new Department(employeeToSaveDTO.getDepartment().getName());
-            departRepository.save(departToSave);
+            departToSave = departRepository.findByName(employeeToSaveDTO.getDepartment().getName());
+            if (departToSave == null || departToSave.getId() == null) {
+                departToSave = new Department(employeeToSaveDTO.getDepartment().getName());
+                departRepository.save(departToSave);
+            }
         } else {
             departToSave = departRepository.getReferenceById(employeeToSaveDTO.getDepartment().getId());
         }
         employeeToSave.setDepartment(departToSave);
 
         // saving roles if new
-        RoleDTOToEntityConverter roleDTOToEntityConverter = new RoleDTOToEntityConverter();
         Set<Role> rolesToSave = new HashSet<>();
         for (RoleDTO roleDTO : employeeToSaveDTO.getEmployeeRoles()) {
-            Role roleToSave = roleDTOToEntityConverter.convert(roleDTO);
-            if (roleToSave != null) {
-                if (roleToSave.getId() == null || roleToSave.getId() == 0) {
+            Role roleToSave;
+            if (roleDTO.getId() == null) {
+                roleToSave = roleRepository.findByRole(roleDTO.getRole()).orElse(null);
+                if (roleToSave == null || roleToSave.getId() == null) {
+                    roleToSave = new Role(roleDTO.getRole());
                     roleRepository.save(roleToSave);
                 }
-                rolesToSave.add(roleToSave);
             }
+            else
+                roleToSave = roleRepository.find(roleDTO.getId()).orElse(null);
+            rolesToSave.add(roleToSave);
         }
         employeeToSave.setEmployeeRoles(rolesToSave);
 
@@ -193,24 +198,30 @@ public class EmployeeServiceImpl implements EmployeeService {
         // saving department if new
         Department departToSave;
         if (employeeToSaveDTO.getDepartment().getId() == null) {
-            departToSave = new Department(employeeToSaveDTO.getDepartment().getName());
-            departRepository.save(departToSave);
+            departToSave = departRepository.findByName(employeeToSaveDTO.getDepartment().getName());
+            if (departToSave == null || departToSave.getId() == null) {
+                departToSave = new Department(employeeToSaveDTO.getDepartment().getName());
+                departRepository.save(departToSave);
+            }
         } else {
             departToSave = departRepository.getReferenceById(employeeToSaveDTO.getDepartment().getId());
         }
         employeeToSave.setDepartment(departToSave);
 
         // saving roles if new
-        RoleDTOToEntityConverter roleDTOToEntityConverter = new RoleDTOToEntityConverter();
         Set<Role> rolesToSave = new HashSet<>();
         for (RoleDTO roleDTO : employeeToSaveDTO.getEmployeeRoles()) {
-            Role roleToSave = roleDTOToEntityConverter.convert(roleDTO);
-            if (roleToSave != null) {
-                if (roleToSave.getId() == null || roleToSave.getId() == 0) {
+            Role roleToSave;
+            if (roleDTO.getId() == null) {
+                roleToSave = roleRepository.findByRole(roleDTO.getRole()).orElse(null);
+                if (roleToSave == null || roleToSave.getId() == null) {
+                    roleToSave = new Role(roleDTO.getRole());
                     roleRepository.save(roleToSave);
                 }
-                rolesToSave.add(roleToSave);
             }
+            else
+                roleToSave = roleRepository.find(roleDTO.getId()).orElse(null);
+            rolesToSave.add(roleToSave);
         }
         employeeToSave.setEmployeeRoles(rolesToSave);
 
