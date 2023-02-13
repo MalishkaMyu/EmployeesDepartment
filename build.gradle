@@ -30,6 +30,9 @@ dependencies {
 	// SwaggerUI ( http://localhost:8080/swagger-ui/index.html )
 	implementation 'org.springdoc:springdoc-openapi-ui:1.6.11'
 
+	// Jackson
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
 	runtimeOnly 'org.postgresql:postgresql'
 
 	// Lombok
