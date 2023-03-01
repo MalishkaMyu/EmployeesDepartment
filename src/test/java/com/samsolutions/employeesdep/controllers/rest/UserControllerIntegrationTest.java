@@ -30,9 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserControllerIntegrationTest {
 
     @Autowired
-    private UserController userController;
-
-    @Autowired
     private MockMvc mockMvc;
 
     @Value("${spring.flyway.placeholders.admin_login}")
@@ -78,7 +75,7 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(username = "test_user", password = "test_pwd") // see test application.properties
+    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"USER","ADMIN"}) // see test application.properties
     public void testReadAllUsers() throws Exception {
         // page 0
         mockMvc.perform(
@@ -96,7 +93,7 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(username = "test_user", password = "test_pwd") // see test application.properties
+    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"USER","ADMIN"}) // see test application.properties
     public void testReadOneUser() throws Exception {
         Long userId = testUsers.get(1).getId();
         mockMvc.perform(
@@ -108,7 +105,7 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(username = "test_user", password = "test_pwd") // see test application.properties
+    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"USER","ADMIN"}) // see test application.properties
     public void testReadUserNotFound() throws Exception {
         mockMvc.perform(
                         get("/api/users/118")
@@ -117,7 +114,7 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(username = "test_user", password = "test_pwd") // see test application.properties
+    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"USER","ADMIN"}) // see test application.properties
     public void testDeleteUserNotFound() throws Exception {
         mockMvc.perform(
                         delete("/api/users/118")
@@ -126,7 +123,7 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(username = "test_user", password = "test_pwd") // see test application.properties
+    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"USER","ADMIN"}) // see test application.properties
     public void testCreateUserDuplicate() throws Exception {
         UserDTO userToSave = new UserDTO("nyusha", "nyushapwd789", "nyusha@mail.ru");
         ObjectMapper mapper = new ObjectMapper();
@@ -140,7 +137,7 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(username = "test_user", password = "test_pwd") // see test application.properties
+    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"USER","ADMIN"}) // see test application.properties
     public void testUpdateUser() throws Exception {
         UserDTO userToSave = testUsers.get(1);
         userToSave.setLogin("losyash");
@@ -176,7 +173,7 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(username = "test_user", password = "test_pwd") // see test application.properties
+    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"USER","ADMIN"}) // see test application.properties
     public void testUpdateUserDuplicate() throws Exception {
         UserDTO userToSave = testUsers.get(1);
         userToSave.setEmail("pin@gmail.com");
@@ -192,7 +189,7 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(username = "test_user", password = "test_pwd") // see test application.properties
+    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"USER","ADMIN"}) // see test application.properties
     public void testUpdateUserNotFound() throws Exception {
         UserDTO userToSave = new UserDTO(118L, "bibi", "bibipwd345", "bibi@mail.ru");
         ObjectMapper mapper = new ObjectMapper();

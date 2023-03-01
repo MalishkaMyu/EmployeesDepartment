@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
@@ -24,4 +25,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     int countRolesOfEmployee(@Param("emp_id") Long id);
 
     boolean existsByNameAndSurname(String name, String surname);
+
+    @Query("select e from Employee e join e.user u where u.login = :login")
+    Optional<Employee> findByUserLogin(@Param("login") String login);
 }

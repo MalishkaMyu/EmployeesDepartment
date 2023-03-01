@@ -48,9 +48,6 @@ public class EmployeeControllerMockTest {
     private EmployeeService empService;
 
     @Autowired
-    private EmployeeController empController;
-
-    @Autowired
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -140,7 +137,7 @@ public class EmployeeControllerMockTest {
     }
 
     @Test
-    @WithMockUser(username = "test_user", password = "test_pwd") // see test application.properties
+    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"USER","ADMIN"}) // see test application.properties
     public void testCreateEmployee() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
@@ -150,7 +147,7 @@ public class EmployeeControllerMockTest {
         when(empService.createEmployee(any(EmployeeDTO.class))).thenReturn(testEmps.get(0));
 
         mockMvc.perform(
-                        post("/api/employees")
+                        post("/api/admin/employees")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(jsonStr)
                 )
@@ -164,7 +161,7 @@ public class EmployeeControllerMockTest {
     }
 
     @Test
-    @WithMockUser(username = "test_user", password = "test_pwd") // see test application.properties
+    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"USER","ADMIN"}) // see test application.properties
     public void testUpdateEmployee() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
@@ -174,7 +171,7 @@ public class EmployeeControllerMockTest {
         when(empService.updateEmployee(any(EmployeeDTO.class))).thenReturn(testEmps.get(2));
 
         mockMvc.perform(
-                        put("/api/employees/3")
+                        put("/api/admin/employees/3")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(jsonStr)
                 )
@@ -188,12 +185,12 @@ public class EmployeeControllerMockTest {
     }
 
     @Test
-    @WithMockUser(username = "test_user", password = "test_pwd") // see test application.properties
+    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"USER","ADMIN"}) // see test application.properties
     public void testDeleteEmployee() throws Exception {
         when(empService.deleteEmployeeById(anyLong())).thenReturn(true);
 
         mockMvc.perform(
-                        delete("/api/employees/2")
+                        delete("/api/admin/employees/2")
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         verify(empService).deleteEmployeeById(anyLong());

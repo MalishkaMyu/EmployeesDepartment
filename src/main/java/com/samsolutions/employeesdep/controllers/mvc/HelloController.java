@@ -3,14 +3,12 @@ package com.samsolutions.employeesdep.controllers.mvc;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/hello")
 public class HelloController {
     public static Map<String, String> getQueryMap(String query) {
         if (query != null) {
@@ -23,10 +21,15 @@ public class HelloController {
             }
             return map;
         } else
-            return Map.of("Hello", "Mary");
+            return Map.of("name", "Mary");
     }
 
-    @GetMapping
+    @GetMapping(value = "/")
+    public String homePage(Model model, HttpServletRequest request) {
+        return "It's page for all users";
+    }
+
+    @GetMapping(value = "/hello")
     public String helloGet(Model model, HttpServletRequest request) {
         //model.addAttribute("name","Машуня");
         String queryString = request.getQueryString();
