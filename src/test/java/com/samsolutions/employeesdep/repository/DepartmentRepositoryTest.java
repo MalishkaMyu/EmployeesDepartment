@@ -10,9 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
@@ -37,7 +34,7 @@ public class DepartmentRepositoryTest {
     @Test
     void testFindAll() {
         List<Department> departs = repository.findAll();
-        assertEquals(2, departs.size());
+        assertEquals(3, departs.size());
         assertNotEquals(depart1.getId(), depart2.getId());
     }
 
@@ -59,6 +56,6 @@ public class DepartmentRepositoryTest {
     public void tearDown() {
         repository.deleteById(depart1.getId());
         repository.delete(depart2);
-        assertThat(repository.findAll(), is(empty()));
+        assertEquals(1, repository.findAll().size());
     }
 }

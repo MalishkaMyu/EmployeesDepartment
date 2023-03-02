@@ -7,7 +7,6 @@ import com.samsolutions.employeesdep.model.dto.DepartmentDTO;
 import com.samsolutions.employeesdep.model.dto.EmployeeDTO;
 import com.samsolutions.employeesdep.model.dto.RoleDTO;
 import com.samsolutions.employeesdep.model.dto.UserDTO;
-import com.samsolutions.employeesdep.model.entities.User;
 import com.samsolutions.employeesdep.model.enums.Gender;
 import com.samsolutions.employeesdep.model.repository.DepartmentRepository;
 import com.samsolutions.employeesdep.model.repository.UserRepository;
@@ -34,6 +33,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class EmployeeAuthenticationServiceTest {
     @Value("${spring.flyway.placeholders.admin_login}")
     private String adminLogin;
+    @Value("${spring.flyway.placeholders.default_department}")
+    private String defaultDepartment;
 
     @Autowired
     private EmployeeAuthenticationService empAuthenticationService;
@@ -128,12 +129,9 @@ public class EmployeeAuthenticationServiceTest {
         }
         listIDs.clear();
         // delete all users except "admin"
-        for (User user : userRepository.findAll()) {
-            if (!user.getLogin().equals(adminLogin))
-                userRepository.deleteById(user.getId());
-        }
-        departRepository.deleteAll();
-        roleRepository.deleteAll();
+        userRepository.deleteByLoginNot(adminLogin);
+        departRepository.deleteByNameNot(defaultDepartment);
+        roleRepository.deleteAllExceptForSecurity();
     }
 
     private void updateRoles(RoleDTO[] allRoles, Set<RoleDTO> savedRoles) {

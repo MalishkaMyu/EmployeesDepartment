@@ -132,16 +132,18 @@ public class EmployeeServiceTest {
         // first page
         List<EmployeeDTO> employees = empService.getAllEmployees();
         assertEquals(2, employees.size());
-        assertEquals("Krosh", employees.get(0).getName());
-        assertEquals("krosh", employees.get(0).getUser().getLogin());
-        assertEquals("Nyusha", employees.get(1).getName());
-        assertEquals("nyusha@gmail.com", employees.get(1).getUser().getEmail());
-        assertTrue(encoder.matches("nyushapwd", employees.get(1).getUser().getPasswordHash()));
+        assertEquals("Admin", employees.get(0).getName());
+        assertEquals(adminLogin, employees.get(0).getUser().getLogin());
+        assertEquals("Krosh", employees.get(1).getName());
+        assertEquals("krosh", employees.get(1).getUser().getLogin());
 
         // second page
         employees = empService.getAllEmployees(1);
-        assertEquals(1, employees.size());
-        assertEquals("Pin", employees.get(0).getName());
+        assertEquals(2, employees.size());
+        assertEquals("Nyusha", employees.get(0).getName());
+        assertEquals("nyusha@gmail.com", employees.get(0).getUser().getEmail());
+        assertTrue(encoder.matches("nyushapwd", employees.get(0).getUser().getPasswordHash()));
+        assertEquals("Pin", employees.get(1).getName());
     }
 
     @Test

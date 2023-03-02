@@ -124,10 +124,10 @@ public class EmployeeRepositoryTest {
 
         // delete the new employee and check
         repository.delete(savedEmp);
-        assertEquals(2, departRepository.findAll().size());
+        assertEquals(3, departRepository.findAll().size());
         assertEquals(4, userRepository.findAll().size());
-        assertEquals(4, roleRepository.findAll().size());
-        assertEquals(1, repository.findAll().size());
+        assertEquals(6, roleRepository.findAll().size());
+        assertEquals(2, repository.findAll().size());
     }
 
     @Test
@@ -227,9 +227,9 @@ public class EmployeeRepositoryTest {
     @AfterEach
     public void tearDown() {
         repository.delete(emp1);
-        assertEquals(0, repository.findAll().size());
-        assertEquals(2, departRepository.findAll().size());
-        assertEquals(4, roleRepository.findAll().size());
+        assertEquals(1, repository.findAll().size());
+        assertEquals(3, departRepository.findAll().size());
+        assertEquals(6, roleRepository.findAll().size());
     }
 
     @AfterAll

@@ -9,9 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -19,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class JpaRoleDaoTest {
     @Autowired
     private JpaRoleDao jpaRoleDao;
+
     private Long id;
 
     @BeforeEach
@@ -70,14 +68,14 @@ public class JpaRoleDaoTest {
 
         // reading all roles
         List<Role> readRoles = jpaRoleDao.findAll();
-        assertEquals(2, readRoles.size());
+        assertEquals(4, readRoles.size());
         assertEquals("Programmer", readRoles.get(0).getRole());
         assertEquals("ProjectManager", readRoles.get(1).getRole());
 
         // deleting role 2
         jpaRoleDao.deleteById(savedID);
         readRoles = jpaRoleDao.findAll();
-        assertEquals(1, readRoles.size());
+        assertEquals(3, readRoles.size());
         assertEquals("Programmer", readRoles.get(0).getRole());
     }
 
@@ -87,7 +85,7 @@ public class JpaRoleDaoTest {
         //jpaRoleDao.deleteById(this.id);
         // deleting all roles except "ROLE_ADMIN" and "ROLE_USER"
         jpaRoleDao.deleteAllExceptForSecurity();
-        //assertEquals(2, jpaRoleDao.findAll().size());
-        assertThat(jpaRoleDao.findAll(), is(empty()));
+        assertEquals(2, jpaRoleDao.findAll().size());
+        //assertThat(jpaRoleDao.findAll(), is(empty()));
     }
 }
