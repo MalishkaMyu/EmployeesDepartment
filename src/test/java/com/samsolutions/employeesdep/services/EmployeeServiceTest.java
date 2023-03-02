@@ -7,7 +7,6 @@ import com.samsolutions.employeesdep.model.dto.DepartmentDTO;
 import com.samsolutions.employeesdep.model.dto.EmployeeDTO;
 import com.samsolutions.employeesdep.model.dto.RoleDTO;
 import com.samsolutions.employeesdep.model.dto.UserDTO;
-import com.samsolutions.employeesdep.model.entities.User;
 import com.samsolutions.employeesdep.model.enums.Gender;
 import com.samsolutions.employeesdep.model.repository.DepartmentRepository;
 import com.samsolutions.employeesdep.model.repository.UserRepository;
@@ -24,12 +23,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class EmployeeServiceTest {
     @Value("${spring.flyway.placeholders.admin_login}")
     private String adminLogin;
+    @Value("${spring.flyway.placeholders.default_department}")
+    private String defaultDepartment;
 
     @Autowired
     private EmployeeService empService;
@@ -184,11 +187,8 @@ public class EmployeeServiceTest {
         }
         listIDs.clear();
         // delete all users except "admin"
-        for (User user : userRepository.findAll()) {
-            if (!user.getLogin().equals(adminLogin))
-                userRepository.deleteById(user.getId());
-        }
-        departRepository.deleteAll();
-        roleRepository.deleteAll();
+        userRepository.deleteByLoginNot(adminLogin);
+        departRepository.deleteByNameNot(defaultDepartment);
+        roleRepository.deleteAllExceptForSecurity();
     }
 }

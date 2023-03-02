@@ -80,6 +80,12 @@ public class JpaRoleDao implements Dao<Role> {
         return query.executeUpdate();
     }
 
+    @Transactional
+    public int deleteAllExceptForSecurity() {
+        Query query = entityManager.createQuery("DELETE from Role r where role not in ('ROLE_ADMIN','ROLE_USER')");
+        return query.executeUpdate();
+    }
+
     public static <Role> List<Role> castRolesList(Class<? extends Role> clazz, Collection<?> roles) {
         List<Role> result = new ArrayList<>(roles.size());
         for (Object role : roles) {

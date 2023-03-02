@@ -68,8 +68,8 @@ public class EmployeeRepositoryTest {
                 LocalDate.of(2010, 10, 11),
                 LocalDate.of(2020, 7, 20));
         // reading department and assign it to the employee
-        if (departRepository.existsById(1L)) {
-            Department depart1 = departRepository.findById(1L).orElse(null);
+        if (departRepository.existsById(2L)) {
+            Department depart1 = departRepository.findById(2L).orElse(null);
             emp1.setDepartment(depart1);
         }
         // reading user and assign it to employee
@@ -103,8 +103,8 @@ public class EmployeeRepositoryTest {
         // creating the new employee with the existing department
         Employee empNew = new Employee("Nyusha", "Smesharik", Gender.FEMALE,
                 LocalDate.of(2010, 1, 13), null);
-        if (departRepository.existsById(1L)) {
-            Department depart1 = departRepository.findById(1L).orElse(null);
+        if (departRepository.existsById(2L)) {
+            Department depart1 = departRepository.findById(2L).orElse(null);
             empNew.setDepartment(depart1);
         }
         // reading user and assign it to employee
@@ -143,8 +143,8 @@ public class EmployeeRepositoryTest {
         Set<Role> roles = Set.of(listRoles.get(1), listRoles.get(2));
         readUpdEmp.setEmployeeRoles(roles);
         // reading another Department and assign the employee this department
-        if (departRepository.existsById(2L)) {
-            Department depart2 = departRepository.findById(2L).orElse(null);
+        if (departRepository.existsById(3L)) {
+            Department depart2 = departRepository.findById(3L).orElse(null);
             readUpdEmp.setDepartment(depart2);
         }
         // reading user and assign it to employee
@@ -167,7 +167,7 @@ public class EmployeeRepositoryTest {
             readUpdEmp.setName("Krosh");
             roles = Set.of(listRoles.get(0), listRoles.get(1), listRoles.get(2));
             readUpdEmp.setEmployeeRoles(roles);
-            Department depart1 = departRepository.findById(1L).orElse(null);
+            Department depart1 = departRepository.findById(2L).orElse(null);
             readUpdEmp.setDepartment(depart1);
             if (userRepository.existsByLogin("krosh")) {
                 User userKrosh = userRepository.findByLogin("krosh").orElse(null);
@@ -198,12 +198,12 @@ public class EmployeeRepositoryTest {
         LocalDate employmentDate = null;
         Employee empNew = new Employee("Nyusha", "Smesharik", Gender.FEMALE,
                 LocalDate.of(2010, 1, 13), employmentDate);
-        if (departRepository.existsById(1L)) {
-            Department depart1 = departRepository.findById(1L).orElse(null);
+        if (departRepository.existsById(2L)) {
+            Department depart1 = departRepository.findById(2L).orElse(null);
             empNew.setDepartment(depart1);
         }
         // 1 role
-        Role role = roleRepository.find(3L).orElse(null);
+        Role role = roleRepository.find(5L).orElse(null);
         if (role != null) {
             Set<Role> rolesToSave = Set.of(role);
             empNew.setEmployeeRoles(rolesToSave);

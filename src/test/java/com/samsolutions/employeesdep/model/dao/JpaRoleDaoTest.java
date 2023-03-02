@@ -23,8 +23,8 @@ public class JpaRoleDaoTest {
 
     @BeforeEach
     public void setup() {
-        Role role = new Role();
-        role.setRole("Programmer");
+        // main role for tests
+        Role role = new Role("Programmer");
         this.id = jpaRoleDao.save(role);
     }
 
@@ -66,7 +66,7 @@ public class JpaRoleDaoTest {
         //saving new role 2
         Role role2 = new Role();
         role2.setRole("ProjectManager");
-        jpaRoleDao.save(role2);
+        Long savedID = jpaRoleDao.save(role2);
 
         // reading all roles
         List<Role> readRoles = jpaRoleDao.findAll();
@@ -75,7 +75,7 @@ public class JpaRoleDaoTest {
         assertEquals("ProjectManager", readRoles.get(1).getRole());
 
         // deleting role 2
-        jpaRoleDao.deleteById(readRoles.get(1).getId());
+        jpaRoleDao.deleteById(savedID);
         readRoles = jpaRoleDao.findAll();
         assertEquals(1, readRoles.size());
         assertEquals("Programmer", readRoles.get(0).getRole());
@@ -83,7 +83,11 @@ public class JpaRoleDaoTest {
 
     @AfterEach
     public void tearDown() {
-        jpaRoleDao.deleteById(this.id);
+        // deleting role "Programmer"
+        //jpaRoleDao.deleteById(this.id);
+        // deleting all roles except "ROLE_ADMIN" and "ROLE_USER"
+        jpaRoleDao.deleteAllExceptForSecurity();
+        //assertEquals(2, jpaRoleDao.findAll().size());
         assertThat(jpaRoleDao.findAll(), is(empty()));
     }
 }

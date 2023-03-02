@@ -18,4 +18,6 @@ public interface Dao<T> {
     void deleteById(Long id);
 
     int deleteAll();
+
+    int deleteAllExceptForSecurity();
 }

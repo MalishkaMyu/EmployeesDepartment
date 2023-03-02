@@ -4,15 +4,14 @@ import com.samsolutions.employeesdep.model.entities.Department;
 import com.samsolutions.employeesdep.model.repository.DepartmentRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import org.junit.jupiter.api.Test;
-
 import java.util.List;
 
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
