@@ -1,10 +1,15 @@
 package com.samsolutions.employeesdep.controllers.mvc;
 
+import com.samsolutions.employeesdep.exception.ErrorResponse;
+import com.samsolutions.employeesdep.exception.GlobalErrorCode;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,9 +29,20 @@ public class HelloController {
             return Map.of("name", "Mary");
     }
 
-    @GetMapping(value = "/")
-    public String homePage(Model model, HttpServletRequest request) {
-        return "It's page for all users";
+    @GetMapping(value = "./")
+    public String homePage(Principal principal) {
+        return "It's default page for all users." +
+                ((principal != null) ? " Hello " + principal.getName() : "");
+    }
+
+    @GetMapping(value = "/forbidden")
+    public ResponseEntity<Object> accessForbidden(Principal principal) {
+        return new ResponseEntity<>(
+                ErrorResponse.builder()
+                        .code(GlobalErrorCode.ERROR_ACCESS_FORBIDDEN)
+                        .userLogin(principal.getName())
+                        .message("You are not authorised to view this page")
+                        .build(), HttpStatus.FORBIDDEN);
     }
 
     @GetMapping(value = "/hello")

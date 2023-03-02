@@ -6,13 +6,14 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.security.Principal;
 import java.util.Locale;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EmployeesdepGlobalException.class)
-    protected ResponseEntity<Object> handleGlobalException(EmployeesdepGlobalException employeesdepGlobalException, Locale locale) {
+    protected ResponseEntity<Object> handleGlobalException(EmployeesdepGlobalException employeesdepGlobalException, Locale locale, Principal principal) {
         HttpStatus status = switch (employeesdepGlobalException.getCode()) {
             case GlobalErrorCode.ERROR_ENTITY_NOT_FOUND:
                 yield HttpStatus.NOT_FOUND;
@@ -22,18 +23,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 yield HttpStatus.BAD_REQUEST;
         };
 
+        String userLogin = (principal != null) ? principal.getName() : "unauthorised";
         if ((employeesdepGlobalException.getObjectClass() != null)) {
             return new ResponseEntity<>(
                     ErrorResponse.builder()
                             .code(employeesdepGlobalException.getCode())
                             .objectName(employeesdepGlobalException.getObjectClass().getSimpleName())
                             .message(employeesdepGlobalException.getMessage())
+                            .userLogin(userLogin)
                             .build(), status);
         } else {
             return new ResponseEntity<>(
                     ErrorResponse.builder()
                             .code(employeesdepGlobalException.getCode())
                             .message(employeesdepGlobalException.getMessage())
+                            .userLogin(userLogin)
                             .build(), status);
         }
 

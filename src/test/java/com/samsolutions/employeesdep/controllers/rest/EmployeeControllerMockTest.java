@@ -185,6 +185,24 @@ public class EmployeeControllerMockTest {
     }
 
     @Test
+    @WithMockUser(username = "test_user", password = "test_pwd") // see test application.properties
+    public void testUpdateEmployeeAccessForbidden() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        String jsonStr = mapper.writeValueAsString(testEmps.get(2));
+
+        when(empService.updateEmployee(any(EmployeeDTO.class))).thenReturn(testEmps.get(2));
+
+        mockMvc.perform(
+                        put("/api/admin/employees/3")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(jsonStr)
+                )
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     @WithMockUser(username = "test_user", password = "test_pwd", roles = {"USER","ADMIN"}) // see test application.properties
     public void testDeleteEmployee() throws Exception {
         when(empService.deleteEmployeeById(anyLong())).thenReturn(true);
