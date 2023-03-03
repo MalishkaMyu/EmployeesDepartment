@@ -31,6 +31,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                             .objectName(employeesdepGlobalException.getObjectClass().getSimpleName())
                             .message(employeesdepGlobalException.getMessage())
                             .userLogin(userLogin)
+                            .httpStatus(status.toString())
                             .build(), status);
         } else {
             return new ResponseEntity<>(
@@ -38,6 +39,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                             .code(employeesdepGlobalException.getCode())
                             .message(employeesdepGlobalException.getMessage())
                             .userLogin(userLogin)
+                            .httpStatus(status.toString())
                             .build(), status);
         }
 

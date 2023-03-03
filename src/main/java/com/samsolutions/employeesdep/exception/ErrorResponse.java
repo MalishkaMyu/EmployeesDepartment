@@ -12,4 +12,5 @@ public class ErrorResponse {
     private String message;
     private String objectName;
     private String userLogin;
+    private String httpStatus;
 }

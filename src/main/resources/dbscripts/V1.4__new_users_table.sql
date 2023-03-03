@@ -1,5 +1,5 @@
 CREATE SEQUENCE seq_user_id
-START WITH 2
+START WITH 1
 INCREMENT BY 1;
 
 CREATE TABLE IF NOT EXISTS "users"
@@ -34,34 +34,3 @@ ALTER TABLE IF EXISTS "employees"
     ON DELETE NO ACTION;
 CREATE INDEX IF NOT EXISTS "fki_employees_fkey_user"
     ON "employees"(user_id);
-
--- insert user for admin
-INSERT INTO "users"(
-	user_id,login,password,email)
-	VALUES (1,'$$$admin_login$$$','','$$$admin_email$$$');
-
--- insert default department
-INSERT INTO "departments"(
-    depart_id,depart_name)
-    VALUES (1,'$$$default_department$$$');
-
--- insert roles for spring security
-INSERT INTO "roles"(
-    role_id,role)
-    VALUES (1,'ROLE_ADMIN');
-INSERT INTO "roles"(
-    role_id,role)
-    VALUES (2,'ROLE_USER');
-
--- insert employee for admin
-INSERT INTO "employees"(
-    emp_id,name,surname,sex,birth_date,depart_id,employment_date,user_id)
-    VALUES (1,'Admin','Admin','M',CURRENT_DATE,1,CURRENT_DATE,1);
-
--- roles for admin
-INSERT INTO "employees_roles"(
-    emp_id,role_id)
-    VALUES (1,1);
-INSERT INTO "employees_roles"(
-    emp_id,role_id)
-    VALUES (1,2);

@@ -40,8 +40,9 @@ public class HelloController {
         return new ResponseEntity<>(
                 ErrorResponse.builder()
                         .code(GlobalErrorCode.ERROR_ACCESS_FORBIDDEN)
-                        .userLogin(principal.getName())
                         .message("You are not authorised to view this page")
+                        .userLogin(principal.getName())
+                        .httpStatus(HttpStatus.FORBIDDEN.toString())
                         .build(), HttpStatus.FORBIDDEN);
     }
 
