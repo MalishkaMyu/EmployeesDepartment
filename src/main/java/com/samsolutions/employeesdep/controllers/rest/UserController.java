@@ -17,12 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping(value = "/users")
+    @PostMapping
     public ResponseEntity<UserDTO> create(@RequestBody UserDTO user) {
         final UserDTO createdUser = userService.createUser(user);
         return createdUser != null
@@ -30,7 +30,7 @@ public class UserController {
                 : new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
-    @GetMapping(value = "/users")
+    @GetMapping
     public ResponseEntity<List<UserDTO>> read() {
         final List<UserDTO> users = userService.getAllUsers();
 
@@ -39,7 +39,7 @@ public class UserController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping(value = "/users/page={page}")
+    @GetMapping(value = "/page={page}")
     public ResponseEntity<List<UserDTO>> read(@PathVariable(name = "page") int page) {
         final List<UserDTO> users = userService.getAllUsers(page);
 
@@ -48,7 +48,7 @@ public class UserController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping(value = "/users/{id}")
+    @GetMapping(value = "/{id}")
     public ResponseEntity<UserDTO> read(@PathVariable(name = "id") Long id) {
         final UserDTO user = userService.getUserById(id);
         return user != null
@@ -56,7 +56,7 @@ public class UserController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PutMapping(value = "/users/{id}")
+    @PutMapping(value = "/{id}")
     public ResponseEntity<UserDTO> update(@PathVariable(name = "id") Long id, @RequestBody UserDTO user) {
         user.setId(id);
         final UserDTO updatedUser = userService.updateUser(user);
@@ -65,7 +65,7 @@ public class UserController {
                 : new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
-    @DeleteMapping(value = "/users/{id}")
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
         final boolean deleted = userService.deleteUserById(id);
         return deleted

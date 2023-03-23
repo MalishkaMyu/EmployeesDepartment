@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/admin/employees")
 public class AdminEmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-    @PostMapping(value = "/employees")
+    @PostMapping
     public ResponseEntity<EmployeeDTO> create(@RequestBody EmployeeDTO employee) {
         final EmployeeDTO createdEmp = employeeService.createEmployee(employee);
         return createdEmp != null
@@ -28,7 +28,7 @@ public class AdminEmployeeController {
     }
 
 
-    @PutMapping(value = "/employees/{id}")
+    @PutMapping(value = "/{id}")
     public ResponseEntity<EmployeeDTO> update(@PathVariable(name = "id") Long id, @RequestBody EmployeeDTO employee) {
         employee.setId(id);
         final EmployeeDTO updatedEmp = employeeService.updateEmployee(employee);
@@ -37,7 +37,7 @@ public class AdminEmployeeController {
                 : new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
-    @DeleteMapping(value = "/employees/{id}")
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
         final boolean deleted = employeeService.deleteEmployeeById(id);
         return deleted

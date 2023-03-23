@@ -29,7 +29,7 @@ public class HelloController {
             return Map.of("name", "Mary");
     }
 
-    @GetMapping(value = "./")
+    @GetMapping(value = "/hi")
     public String homePage(Principal principal) {
         return "It's default page for all users." +
                 ((principal != null) ? " Hello " + principal.getName() : "");

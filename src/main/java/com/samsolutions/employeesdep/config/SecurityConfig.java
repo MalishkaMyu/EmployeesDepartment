@@ -8,10 +8,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
     @Autowired
     private MyPasswordEncoder encoder;
@@ -19,18 +19,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private EmployeeAuthenticationService empAuthenticationService;
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests()
                 .antMatchers("/api/employees/**").authenticated()
                 .antMatchers("/api/admin/**").hasRole("ADMIN")
                 .antMatchers("/api/users/**").hasRole("ADMIN")
                 .and()
-                .formLogin().defaultSuccessUrl("/api/")
+                .formLogin().defaultSuccessUrl("/")
                 .and()
                 .logout().logoutSuccessUrl("/")
                 .and()
                 .exceptionHandling().accessDeniedPage("/forbidden");
+        return http.build();
     }
 
     /*@Override
