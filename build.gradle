@@ -48,7 +48,6 @@ dependencies {
 
 	testRuntimeOnly 'com.h2database:h2'
 
-	// https://mvnrepository.com/artifact/com.querydsl/querydsl-core
 	implementation 'com.querydsl:querydsl-core:4.1.0'
 }
 

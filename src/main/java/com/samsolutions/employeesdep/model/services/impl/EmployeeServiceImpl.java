@@ -119,6 +119,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                     "The employee with ID " + employeeToSave.getId() + " already exists and can not be created.",
                     Employee.class);
         }
+
         // check whether employee with the name already exists
         if (empRepository.existsByNameAndSurname(employeeToSave.getName(), employeeToSave.getSurname())) {
             // employee is already exists
@@ -152,8 +153,9 @@ public class EmployeeServiceImpl implements EmployeeService {
                     roleRepository.save(roleToSave);
                 }
             }
-            else
+            else {
                 roleToSave = roleRepository.find(roleDTO.getId()).orElse(null);
+            }
             rolesToSave.add(roleToSave);
         }
         employeeToSave.setEmployeeRoles(rolesToSave);
@@ -177,7 +179,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         //check whether employee doesn't exist
         if (employeeToSave.getId() == null || !empRepository.existsById(employeeToSave.getId())) {
-            // employee is not still exists
+            // employee does not still exist
             throw new EntityNotFoundException("There is no employee with ID " + employeeToSave.getId(),
                     Employee.class);
         }
@@ -219,8 +221,9 @@ public class EmployeeServiceImpl implements EmployeeService {
                     roleRepository.save(roleToSave);
                 }
             }
-            else
+            else {
                 roleToSave = roleRepository.find(roleDTO.getId()).orElse(null);
+            }
             rolesToSave.add(roleToSave);
         }
         employeeToSave.setEmployeeRoles(rolesToSave);

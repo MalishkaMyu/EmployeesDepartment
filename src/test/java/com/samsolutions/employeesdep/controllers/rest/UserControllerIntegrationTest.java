@@ -214,6 +214,7 @@ public class UserControllerIntegrationTest {
                                     .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk());
         }
+
         testUsers.clear();
 
         // check, whether all users except admin are deleted

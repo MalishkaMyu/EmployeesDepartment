@@ -22,7 +22,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 yield HttpStatus.BAD_REQUEST;
         };
 
-        if ((employeesdepGlobalException.getObjectClass() != null)) {
+        if (employeesdepGlobalException.getObjectClass() != null) {
             return new ResponseEntity<>(
                     ErrorResponse.builder()
                             .code(employeesdepGlobalException.getCode())
