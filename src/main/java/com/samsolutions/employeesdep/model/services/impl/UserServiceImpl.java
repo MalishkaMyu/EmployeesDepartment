@@ -41,17 +41,20 @@ public class UserServiceImpl implements UserService {
         if (userToSave.getId() != null && userRepository.existsById(userToSave.getId())) {
             // user with ID is already exists
             throw new EntityDuplicateException(
-                    "The User with ID " + userToSave.getId() + " already exists and can not be created.");
+                    "The User with ID " + userToSave.getId() + " already exists and can not be created.",
+                    User.class);
         }
         if (userRepository.existsByLogin(userToSave.getLogin())) {
             // login is already exists
             throw new EntityDuplicateException(
-                    "The login " + userToSave.getLogin() + " is already registered. Please choose another login.");
+                    "The login " + userToSave.getLogin() + " is already registered. Please choose another login.",
+                    User.class);
         }
         if (userRepository.existsByEmail(userToSave.getEmail())) {
             // email is already exists
             throw new EntityDuplicateException(
-                    "The email " + userToSave.getEmail() + " is already registered. Please choose another email.");
+                    "The email " + userToSave.getEmail() + " is already registered. Please choose another email.",
+                    User.class);
         }
         if (!userToSaveDTO.getPassword().isBlank())
             userToSave.setPasswordHash(encoder.encode(userToSaveDTO.getPassword()));
@@ -72,7 +75,8 @@ public class UserServiceImpl implements UserService {
         // check where the user exists
         if (userToSaveDTO.getId() == null || !userRepository.existsById(userToSave.getId())) {
             // user is not still exists
-            throw new EntityNotFoundException("There is no user with ID " + userToSave.getId() + ".");
+            throw new EntityNotFoundException("There is no user with ID " + userToSave.getId() + ".",
+                    User.class);
         }
         // reading current user information from database
         User existingUser = userRepository.getReferenceById(userToSave.getId());
@@ -82,7 +86,7 @@ public class UserServiceImpl implements UserService {
             // user with the new login is already exists
             throw new EntityDuplicateException(
                     "The login " + userToSave.getLogin() + " is already registered for another user. " +
-                            "Please choose another login.");
+                            "Please choose another login.", User.class);
         }
         // check whether new email already has the another user
         if (userRepository.existsByEmail(userToSave.getEmail()) &&
@@ -90,7 +94,7 @@ public class UserServiceImpl implements UserService {
             // user with the new email is already exists
             throw new EntityDuplicateException(
                     "The email " + userToSave.getEmail() + " is already registered for another user. " +
-                            "Please choose another email.");
+                            "Please choose another email.", User.class);
         }
 
         // encoding password
@@ -105,17 +109,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public UserDTO getUserByLogin(String userLogin) {
-        User readUser = userRepository.findByLogin(userLogin).orElseThrow(EntityNotFoundException::new);
-        return new UserEntityToDTOConverter().convert(readUser);
+        if (userRepository.findByLogin(userLogin).isPresent()) {
+            User readUser = userRepository.findByLogin(userLogin).orElseThrow(EntityNotFoundException::new);
+            return new UserEntityToDTOConverter().convert(readUser);
+        } else
+            throw new EntityNotFoundException("There is no User with login " + userLogin,
+                    User.class);
     }
 
     @Override
-    @Transactional
     public UserDTO getUserById(Long userId) {
-        User readUser = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
-        return new UserEntityToDTOConverter().convert(readUser);
+        if (userRepository.findById(userId).isPresent()) {
+            User readUser = userRepository.findById(userId).get();
+            return new UserEntityToDTOConverter().convert(readUser);
+        } else {
+            throw new EntityNotFoundException("There is no User with ID " + userId,
+                    User.class);
+        }
     }
 
     @Override
@@ -124,14 +135,13 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsById(userId)) {
             userRepository.deleteById(userId);
             return !userRepository.existsById(userId);
-        }
-        else {
-            throw new EntityNotFoundException("There is no User with ID " + userId + " to delete.");
+        } else {
+            throw new EntityNotFoundException("There is no User with ID " + userId + " to delete.",
+                    User.class);
         }
     }
 
     @Override
-    @Transactional
     public List<UserDTO> getAllUsers() {
         Pageable paging = PageRequest.of(0, usersPerPage);
         UserEntityToDTOConverter userEntityToDTOConverter = new UserEntityToDTOConverter();
@@ -141,7 +151,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public List<UserDTO> getAllUsers(int page) {
         Pageable paging = PageRequest.of(page, usersPerPage);
         UserEntityToDTOConverter userEntityToDTOConverter = new UserEntityToDTOConverter();

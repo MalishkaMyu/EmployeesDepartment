@@ -9,10 +9,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SpringBootTest
 public class JpaRoleDaoTest {
@@ -25,6 +26,20 @@ public class JpaRoleDaoTest {
         Role role = new Role();
         role.setRole("Programmer");
         this.id = jpaRoleDao.save(role);
+    }
+
+    @Test
+    void testReadByRole() {
+        if (jpaRoleDao.findByRole("Programmer").isPresent()) {
+            Role readRole = jpaRoleDao.findByRole("Programmer").get();
+            assertEquals("Programmer", readRole.getRole());
+        }
+    }
+
+    @Test
+    void testReadByRoleNotFound() {
+        Role readRole = jpaRoleDao.findByRole("Dancer").orElse(null);
+        assertNull(readRole);
     }
 
     @Test

@@ -20,7 +20,7 @@ public class EmployeeDTO {
     private Gender sex;
     private LocalDate birthDate;
     private String passNumber;
-    private LocalDate passValid;
+    private LocalDate passValidity;
     private LocalDate employmentDate;
 
     private Long workExperience;
@@ -31,12 +31,19 @@ public class EmployeeDTO {
 
     private Set<RoleDTO> employeeRoles;
 
-    public EmployeeDTO(String name, String surname, Gender sex, LocalDate birthDate, LocalDate employmentDate) {
+    public EmployeeDTO(String name, String surname, Gender sex,
+                       LocalDate birthDate, LocalDate employmentDate) {
         this.name = name;
         this.surname = surname;
         this.sex = sex;
         this.birthDate = birthDate;
         this.employmentDate = Objects.requireNonNullElse(employmentDate, LocalDate.now());
         this.workExperience = ChronoUnit.YEARS.between(this.employmentDate, LocalDate.now());
+    }
+
+    public EmployeeDTO(Long id, String name, String surname, Gender sex,
+                       LocalDate birthDate, LocalDate employmentDate) {
+        this(name, surname, sex, birthDate, employmentDate);
+        this.id = id;
     }
 }

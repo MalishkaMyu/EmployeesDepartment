@@ -4,7 +4,6 @@ import com.samsolutions.employeesdep.exception.EntityDuplicateException;
 import com.samsolutions.employeesdep.exception.EntityNotFoundException;
 import com.samsolutions.employeesdep.model.converters.EmployeeDTOToEntityConverter;
 import com.samsolutions.employeesdep.model.converters.EmployeeEntityToDTOConverter;
-import com.samsolutions.employeesdep.model.converters.RoleDTOToEntityConverter;
 import com.samsolutions.employeesdep.model.converters.UserDTOToEntityConverter;
 import com.samsolutions.employeesdep.model.dao.JpaRoleDao;
 import com.samsolutions.employeesdep.model.dto.EmployeeDTO;
@@ -76,8 +75,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public EmployeeDTO getEmployeeById(Long employeeId) {
-        Employee readEmp = empRepository.findById(employeeId).orElseThrow(EntityNotFoundException::new);
-        return new EmployeeEntityToDTOConverter().convert(readEmp);
+        if (empRepository.findById(employeeId).isPresent()) {
+            Employee readEmp = empRepository.findById(employeeId).get();
+            return new EmployeeEntityToDTOConverter().convert(readEmp);
+        }
+        else
+            throw new EntityNotFoundException("There is no Employee with ID " + employeeId,
+                    Employee.class);
+
     }
 
     @Override
@@ -111,37 +116,47 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employeeToSave.getId() != null && empRepository.existsById(employeeToSave.getId())) {
             // employee with ID is already exists
             throw new EntityDuplicateException(
-                    "The employee with ID " + employeeToSave.getId() + " already exists and can not be created.");
+                    "The employee with ID " + employeeToSave.getId() + " already exists and can not be created.",
+                    Employee.class);
         }
+
         // check whether employee with the name already exists
         if (empRepository.existsByNameAndSurname(employeeToSave.getName(), employeeToSave.getSurname())) {
             // employee is already exists
             throw new EntityDuplicateException(
                     "The employee " + employeeToSave.getName() + " " + employeeToSave.getSurname() +
-                    " is already registered. Please choose another name.");
+                    " is already registered. Please choose another name.",
+                    Employee.class);
         }
 
         // saving department if new
         Department departToSave;
         if (employeeToSaveDTO.getDepartment().getId() == null) {
-            departToSave = new Department(employeeToSaveDTO.getDepartment().getName());
-            departRepository.save(departToSave);
+            departToSave = departRepository.findByName(employeeToSaveDTO.getDepartment().getName());
+            if (departToSave == null || departToSave.getId() == null) {
+                departToSave = new Department(employeeToSaveDTO.getDepartment().getName());
+                departRepository.save(departToSave);
+            }
         } else {
             departToSave = departRepository.getReferenceById(employeeToSaveDTO.getDepartment().getId());
         }
         employeeToSave.setDepartment(departToSave);
 
         // saving roles if new
-        RoleDTOToEntityConverter roleDTOToEntityConverter = new RoleDTOToEntityConverter();
         Set<Role> rolesToSave = new HashSet<>();
         for (RoleDTO roleDTO : employeeToSaveDTO.getEmployeeRoles()) {
-            Role roleToSave = roleDTOToEntityConverter.convert(roleDTO);
-            if (roleToSave != null) {
-                if (roleToSave.getId() == null || roleToSave.getId() == 0) {
+            Role roleToSave;
+            if (roleDTO.getId() == null) {
+                roleToSave = roleRepository.findByRole(roleDTO.getRole()).orElse(null);
+                if (roleToSave == null || roleToSave.getId() == null) {
+                    roleToSave = new Role(roleDTO.getRole());
                     roleRepository.save(roleToSave);
                 }
-                rolesToSave.add(roleToSave);
             }
+            else {
+                roleToSave = roleRepository.find(roleDTO.getId()).orElse(null);
+            }
+            rolesToSave.add(roleToSave);
         }
         employeeToSave.setEmployeeRoles(rolesToSave);
 
@@ -164,8 +179,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         //check whether employee doesn't exist
         if (employeeToSave.getId() == null || !empRepository.existsById(employeeToSave.getId())) {
-            // employee is not still exists
-            throw new EntityNotFoundException("There is no employee with ID " + employeeToSave.getId() + ".");
+            // employee does not still exist
+            throw new EntityNotFoundException("There is no employee with ID " + employeeToSave.getId(),
+                    Employee.class);
         }
         // reading current employee information from database
         Employee existingEmployee = empRepository.findById(employeeToSave.getId()).orElse(null);
@@ -177,30 +193,38 @@ public class EmployeeServiceImpl implements EmployeeService {
             // employee with new name is already exists
             throw new EntityDuplicateException(
                     "The employee with the name " + employeeToSave.getName() + " " + employeeToSave.getSurname() +
-                            " is already registered. Please choose another name.");
+                            " is already registered. Please choose another name.",
+                    Employee.class);
         }
 
         // saving department if new
         Department departToSave;
         if (employeeToSaveDTO.getDepartment().getId() == null) {
-            departToSave = new Department(employeeToSaveDTO.getDepartment().getName());
-            departRepository.save(departToSave);
+            departToSave = departRepository.findByName(employeeToSaveDTO.getDepartment().getName());
+            if (departToSave == null || departToSave.getId() == null) {
+                departToSave = new Department(employeeToSaveDTO.getDepartment().getName());
+                departRepository.save(departToSave);
+            }
         } else {
             departToSave = departRepository.getReferenceById(employeeToSaveDTO.getDepartment().getId());
         }
         employeeToSave.setDepartment(departToSave);
 
         // saving roles if new
-        RoleDTOToEntityConverter roleDTOToEntityConverter = new RoleDTOToEntityConverter();
         Set<Role> rolesToSave = new HashSet<>();
         for (RoleDTO roleDTO : employeeToSaveDTO.getEmployeeRoles()) {
-            Role roleToSave = roleDTOToEntityConverter.convert(roleDTO);
-            if (roleToSave != null) {
-                if (roleToSave.getId() == null || roleToSave.getId() == 0) {
+            Role roleToSave;
+            if (roleDTO.getId() == null) {
+                roleToSave = roleRepository.findByRole(roleDTO.getRole()).orElse(null);
+                if (roleToSave == null || roleToSave.getId() == null) {
+                    roleToSave = new Role(roleDTO.getRole());
                     roleRepository.save(roleToSave);
                 }
-                rolesToSave.add(roleToSave);
             }
+            else {
+                roleToSave = roleRepository.find(roleDTO.getId()).orElse(null);
+            }
+            rolesToSave.add(roleToSave);
         }
         employeeToSave.setEmployeeRoles(rolesToSave);
 
@@ -228,6 +252,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
             return !empRepository.existsById(employeeId);
         } else
-            return false;
+            throw new EntityNotFoundException("There is no Employee with ID " + employeeId + " to delete.",
+                    Employee.class);
     }
 }
