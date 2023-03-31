@@ -17,6 +17,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 	//Security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.security:spring-security-crypto:5.7.3'
@@ -33,6 +35,13 @@ dependencies {
 	// Jackson
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
+	// https://mvnrepository.com/artifact/com.querydsl/querydsl-core
+	implementation 'com.querydsl:querydsl-core'
+	implementation 'org.jboss.resteasy:resteasy-jackson2-provider:6.2.3.Final'
+	implementation 'org.keycloak:keycloak-dependencies-server-all:21.0.1'
+
+	implementation 'org.liquibase:liquibase-core:4.20.0'
+
 	runtimeOnly 'org.postgresql:postgresql'
 
 	// Lombok
@@ -47,9 +56,6 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 
 	testRuntimeOnly 'com.h2database:h2'
-
-	// https://mvnrepository.com/artifact/com.querydsl/querydsl-core
-	implementation 'com.querydsl:querydsl-core:4.1.0'
 }
 
 tasks.named('test') {

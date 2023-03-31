@@ -31,6 +31,9 @@ public class SecurityConfig {
                 .logout().logoutSuccessUrl("/")
                 .and()
                 .exceptionHandling().accessDeniedPage("/forbidden");
+                //.and()
+                //.oauth2ResourceServer()
+                //.jwt();
         return http.build();
     }
 
