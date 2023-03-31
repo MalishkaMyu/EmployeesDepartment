@@ -14,6 +14,7 @@ repositories {
 }
 
 dependencies {
+	implementation 'org.liquibase:liquibase-core:4.16.1'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -39,8 +40,6 @@ dependencies {
 	implementation 'com.querydsl:querydsl-core'
 	implementation 'org.jboss.resteasy:resteasy-jackson2-provider:6.2.3.Final'
 	implementation 'org.keycloak:keycloak-dependencies-server-all:21.0.1'
-
-	implementation 'org.liquibase:liquibase-core:4.20.0'
 
 	runtimeOnly 'org.postgresql:postgresql'
 
