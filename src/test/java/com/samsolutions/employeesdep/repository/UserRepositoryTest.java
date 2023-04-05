@@ -123,14 +123,9 @@ public class UserRepositoryTest {
 
     @AfterEach
     public void tearDown() {
-        /*for (Long id : listIDs) {
-            userRepository.deleteById(id);
-        }*/
         userRepository.deleteByLoginNot(adminLogin);
-        //Predicate predicate = User.login.Not(adminLogin);
         listIDs.clear();
         List<User> all = userRepository.findAll();
-        all.forEach(System.out::println);
         assertEquals(1, all.size());
     }
 }

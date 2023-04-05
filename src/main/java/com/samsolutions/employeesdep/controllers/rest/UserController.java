@@ -19,12 +19,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+
     @Autowired
     private UserService userService;
 
     @PostMapping
     public ResponseEntity<UserDTO> create(@RequestBody UserDTO user) {
         final UserDTO createdUser = userService.createUser(user);
+
         return createdUser != null
                 ? new ResponseEntity<>(createdUser, HttpStatus.CREATED)
                 : new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -51,6 +53,7 @@ public class UserController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<UserDTO> read(@PathVariable(name = "id") Long id) {
         final UserDTO user = userService.getUserById(id);
+
         return user != null
                 ? new ResponseEntity<>(user, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -60,6 +63,7 @@ public class UserController {
     public ResponseEntity<UserDTO> update(@PathVariable(name = "id") Long id, @RequestBody UserDTO user) {
         user.setId(id);
         final UserDTO updatedUser = userService.updateUser(user);
+
         return updatedUser != null
                 ? new ResponseEntity<>(updatedUser, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -68,6 +72,7 @@ public class UserController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
         final boolean deleted = userService.deleteUserById(id);
+
         return deleted
                 ? new ResponseEntity<>(HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);

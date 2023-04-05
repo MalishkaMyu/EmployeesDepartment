@@ -79,7 +79,6 @@ public class UserServiceImpl implements UserService {
                     User.class);
         }
         // reading current user information from database
-        //User existingUser = userRepository.getReferenceById(userToSave.getId());
         User existingUser = userRepository.getReferenceById(userToSave.getId());
         // check whether new login already has the another user
         if (userRepository.existsByLogin(userToSave.getLogin()) &&
@@ -110,25 +109,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public UserDTO getUserByLogin(String userLogin) {
         if (userRepository.findByLogin(userLogin).isPresent()) {
             User readUser = userRepository.findByLogin(userLogin).orElseThrow(EntityNotFoundException::new);
             return new UserEntityToDTOConverter().convert(readUser);
-        }
-        else
+        } else
             throw new EntityNotFoundException("There is no User with login " + userLogin,
                     User.class);
     }
 
     @Override
-    @Transactional
     public UserDTO getUserById(Long userId) {
         if (userRepository.findById(userId).isPresent()) {
             User readUser = userRepository.findById(userId).get();
             return new UserEntityToDTOConverter().convert(readUser);
-        }
-        else {
+        } else {
             throw new EntityNotFoundException("There is no User with ID " + userId,
                     User.class);
         }
@@ -140,15 +135,13 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsById(userId)) {
             userRepository.deleteById(userId);
             return !userRepository.existsById(userId);
-        }
-        else {
+        } else {
             throw new EntityNotFoundException("There is no User with ID " + userId + " to delete.",
                     User.class);
         }
     }
 
     @Override
-    @Transactional
     public List<UserDTO> getAllUsers() {
         Pageable paging = PageRequest.of(0, usersPerPage);
         UserEntityToDTOConverter userEntityToDTOConverter = new UserEntityToDTOConverter();
@@ -158,7 +151,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public List<UserDTO> getAllUsers(int page) {
         Pageable paging = PageRequest.of(page, usersPerPage);
         UserEntityToDTOConverter userEntityToDTOConverter = new UserEntityToDTOConverter();
