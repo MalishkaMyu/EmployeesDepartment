@@ -1,13 +1,7 @@
 package com.samsolutions.employeesdep.config;
 
-import org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher;
-import org.jboss.resteasy.plugins.server.servlet.ResteasyContextParameters;
-import org.keycloak.platform.Platform;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.naming.CompositeName;
 import javax.naming.InitialContext;
@@ -16,22 +10,35 @@ import javax.naming.NameParser;
 import javax.naming.NamingException;
 import javax.naming.spi.NamingManager;
 import javax.sql.DataSource;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+
+import org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher;
+import org.jboss.resteasy.plugins.server.servlet.ResteasyContextParameters;
+import org.keycloak.platform.Platform;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import com.samsolutions.employeesdep.EmployeesdepApplication;
 
 @Configuration
 public class EmbeddedKeycloakConfig {
+	
+	@Autowired
+	private DataSource keycloakDataSource;
 
     @Bean
     ServletRegistrationBean keycloakJaxRsApplication(
-            KeycloakServerProperties keycloakServerProperties, DataSource dataSource) throws Exception {
+            KeycloakServerProperties keycloakServerProperties) throws Exception {
 
-        mockJndiEnvironment(dataSource);
-        EmbeddedKeycloakApplication.keycloakServerProperties = keycloakServerProperties;
+        mockJndiEnvironment(keycloakDataSource);
+        EmployeesdepApplication.keycloakServerProperties = keycloakServerProperties;
         ServletRegistrationBean servlet = new ServletRegistrationBean<>(
                 new HttpServlet30Dispatcher());
         servlet.addInitParameter("javax.ws.rs.Application",
-                EmbeddedKeycloakApplication.class.getName());
+        		EmployeesdepApplication.class.getName());
         servlet.addInitParameter(ResteasyContextParameters.RESTEASY_SERVLET_MAPPING_PREFIX,
                 keycloakServerProperties.getContextPath());
         servlet.addInitParameter(ResteasyContextParameters.RESTEASY_USE_CONTAINER_FORM_PARAMS,
@@ -63,7 +70,7 @@ public class EmbeddedKeycloakConfig {
 
                     @Override
                     public Object lookup(String name) {
-                        if ("spring/datasource".equals(name)) {
+                        if ("spring/datasource/keycloak".equals(name)) {
                             return dataSource;
                         } else if (name.startsWith("java:jboss/ee/concurrency/executor/")) {
                             return fixedThreadPool();
