@@ -21,6 +21,11 @@ public class AdminEmployeeController {
 
     @PostMapping
     public ResponseEntity<EmployeeDTO> create(@RequestBody EmployeeDTO employee) {
+                                              //RequestHeader(name = HttpHeaders.AUTHORIZATION) String token) {
+        /*String JwtToken = StringUtils.substring(token, "Bearer".length());
+        DecodedJWT jwt = JWT.decode(JwtToken);
+        String keycloakID = jwt.getSubject();*/
+
         final EmployeeDTO createdEmp = employeeService.createEmployee(employee);
         return createdEmp != null
                 ? new ResponseEntity<>(createdEmp, HttpStatus.CREATED)

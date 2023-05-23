@@ -15,6 +15,8 @@ public class UserDTO {
     @JsonIgnore
     private String passwordHash;
     private String email;
+    @JsonIgnore
+    private String keycloakId;
 
     public UserDTO(String login, String password, String email) {
         this.login = login;

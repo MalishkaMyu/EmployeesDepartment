@@ -6,14 +6,13 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.lang.NonNull;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 @Entity
@@ -40,6 +39,9 @@ public class User extends AbstractDateTimeEntity implements Serializable {
     @Column(name = "email", length = 70)
     @NonNull
     private String email;
+
+    @Column(name = "keycloak_id", length = 36)
+    private String keycloakId;
 
     public User(String login, String email) {
         this.login = login;

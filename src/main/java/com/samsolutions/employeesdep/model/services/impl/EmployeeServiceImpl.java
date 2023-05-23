@@ -9,6 +9,7 @@ import com.samsolutions.employeesdep.model.dao.JpaRoleDao;
 import com.samsolutions.employeesdep.model.dto.EmployeeDTO;
 import com.samsolutions.employeesdep.model.dto.RoleDTO;
 import com.samsolutions.employeesdep.model.dto.UserDTO;
+import com.samsolutions.employeesdep.model.dto.UserKeycloakDTO;
 import com.samsolutions.employeesdep.model.entities.Department;
 import com.samsolutions.employeesdep.model.entities.Employee;
 import com.samsolutions.employeesdep.model.entities.Role;
@@ -16,6 +17,7 @@ import com.samsolutions.employeesdep.model.entities.User;
 import com.samsolutions.employeesdep.model.repository.DepartmentRepository;
 import com.samsolutions.employeesdep.model.repository.EmployeeRepository;
 import com.samsolutions.employeesdep.model.services.EmployeeService;
+import com.samsolutions.employeesdep.model.services.KeycloakUserService;
 import com.samsolutions.employeesdep.model.services.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private KeycloakUserService keycloakUserService;
 
     public List<EmployeeDTO> getEmployeesToDepartmentCommon(String departName, int page, int pageSize) {
         Pageable paging = PageRequest.of(page, pageSize);
@@ -160,8 +165,19 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         employeeToSave.setEmployeeRoles(rolesToSave);
 
+        // create new keycloak user
+        UserDTO userDTO = employeeToSaveDTO.getUser();
+        UserKeycloakDTO userKeycloakDTO = new UserKeycloakDTO(userDTO.getLogin(),
+                userDTO.getPassword(), userDTO.getEmail(), employeeToSave.getName(), employeeToSave.getSurname());
+        List<String> roles = rolesToSave.stream()
+                .map(r -> r.getRole())
+                .collect(Collectors.toList());
+        userKeycloakDTO.setRoles(roles);
+        UserKeycloakDTO savedUserKeycloakDTO = keycloakUserService.createKeycloakUser(userKeycloakDTO);
+        userDTO.setKeycloakId(savedUserKeycloakDTO.getKeycloakId());
+
         // create new user always over UserService !!
-        UserDTO savedUserDTO = userService.createUser(employeeToSaveDTO.getUser());
+        UserDTO savedUserDTO = userService.createUser(userDTO);
         employeeToSave.setUser(new UserDTOToEntityConverter().convert(savedUserDTO));
 
         // saving employee
@@ -249,6 +265,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             // deleting the corresponding user
             if (!userService.deleteUserById(userToDelete.getId()))
                 return false;
+            // deleting keycloak user
+            keycloakUserService.deleteKeycloakUser(userToDelete.getKeycloakId());
 
             return !empRepository.existsById(employeeId);
         } else
