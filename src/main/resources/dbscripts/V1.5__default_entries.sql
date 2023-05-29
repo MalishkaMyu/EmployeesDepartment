@@ -11,10 +11,10 @@ INSERT INTO "departments"(
 -- insert roles for spring security
 INSERT INTO "roles"(
     role)
-    VALUES ('ROLE_ADMIN');
+    VALUES ('admin');
 INSERT INTO "roles"(
     role)
-    VALUES ('ROLE_USER');
+    VALUES ('user');
 
 -- insert employee for admin
 INSERT INTO "employees"(

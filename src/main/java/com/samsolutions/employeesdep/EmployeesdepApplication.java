@@ -1,8 +1,10 @@
 package com.samsolutions.employeesdep;
 
 import com.samsolutions.employeesdep.config.MyPasswordEncoder;
+import com.samsolutions.employeesdep.model.dto.UserKeycloakDTO;
 import com.samsolutions.employeesdep.model.entities.User;
 import com.samsolutions.employeesdep.model.repository.UserRepository;
+import com.samsolutions.employeesdep.model.services.KeycloakUserService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
+import java.util.Collections;
 
 @SpringBootApplication(exclude = LiquibaseAutoConfiguration.class)
 public class EmployeesdepApplication {
@@ -24,11 +27,17 @@ public class EmployeesdepApplication {
     @Value("${spring.flyway.placeholders.admin_login}")
     private String adminLogin;
 
+    @Value("${spring.flyway.placeholders.admin_email}")
+    private String adminEmail;
+
     @Autowired
     private MyPasswordEncoder encoder;
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private KeycloakUserService keycloakUserService;
 
     @Bean
     public RestTemplate restTemplate() {
@@ -46,8 +55,18 @@ public class EmployeesdepApplication {
                 boolean useNumbers = true;
                 String generatedPassword = RandomStringUtils.random(length, useLetters, useNumbers);
                 System.out.println("Remember generated password for user '" + adminLogin + "':" + generatedPassword);
+
+                // create keycloak user for 'admin'
+                UserKeycloakDTO userKeycloakDTO = new UserKeycloakDTO(adminLogin,
+                        generatedPassword, adminEmail, "Admin","Admin");
+                userKeycloakDTO.setRoles(Collections.singletonList("admin"));
+                UserKeycloakDTO savedUserKeycloakDTO = keycloakUserService.createKeycloakUser(userKeycloakDTO);
+                String adminKeycloakId = savedUserKeycloakDTO.getKeycloakId();
+
+                // saving admin user with password and keycloak-id
                 String passwordHash = encoder.encode(generatedPassword);
                 userAdmin.setPasswordHash(passwordHash);
+                userAdmin.setKeycloakId(adminKeycloakId);
                 userRepository.saveAndFlush(userAdmin);
             }
         }

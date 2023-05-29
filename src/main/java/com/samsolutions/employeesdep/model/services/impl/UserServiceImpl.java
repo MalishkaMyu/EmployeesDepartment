@@ -97,8 +97,14 @@ public class UserServiceImpl implements UserService {
                             "Please choose another email.", User.class);
         }
 
-        // encoding password
-        userToSave.setPasswordHash(encoder.encode(userToSaveDTO.getPassword()));
+        if (userToSaveDTO.getPassword().isEmpty()) {
+            // if the password empty, using old password
+            userToSave.setPasswordHash(existingUser.getPasswordHash());
+        }
+        else {
+            // encoding password
+            userToSave.setPasswordHash(encoder.encode(userToSaveDTO.getPassword()));
+        }
         // saving user
         userRepository.save(userToSave);
         UserDTO savedUserDTO = new UserEntityToDTOConverter().convert(userToSave);

@@ -83,8 +83,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (empRepository.findById(employeeId).isPresent()) {
             Employee readEmp = empRepository.findById(employeeId).get();
             return new EmployeeEntityToDTOConverter().convert(readEmp);
-        }
-        else
+        } else
             throw new EntityNotFoundException("There is no Employee with ID " + employeeId,
                     Employee.class);
 
@@ -130,7 +129,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             // employee is already exists
             throw new EntityDuplicateException(
                     "The employee " + employeeToSave.getName() + " " + employeeToSave.getSurname() +
-                    " is already registered. Please choose another name.",
+                            " is already registered. Please choose another name.",
                     Employee.class);
         }
 
@@ -157,8 +156,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                     roleToSave = new Role(roleDTO.getRole());
                     roleRepository.save(roleToSave);
                 }
-            }
-            else {
+            } else {
                 roleToSave = roleRepository.find(roleDTO.getId()).orElse(null);
             }
             rolesToSave.add(roleToSave);
@@ -170,7 +168,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         UserKeycloakDTO userKeycloakDTO = new UserKeycloakDTO(userDTO.getLogin(),
                 userDTO.getPassword(), userDTO.getEmail(), employeeToSave.getName(), employeeToSave.getSurname());
         List<String> roles = rolesToSave.stream()
-                .map(r -> r.getRole())
+                .map(Role::getRole)
                 .collect(Collectors.toList());
         userKeycloakDTO.setRoles(roles);
         UserKeycloakDTO savedUserKeycloakDTO = keycloakUserService.createKeycloakUser(userKeycloakDTO);
@@ -205,7 +203,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (empRepository.existsByNameAndSurname(employeeToSave.getName(), employeeToSave.getSurname()) &&
                 existingEmployee != null &&
                 (!employeeToSave.getName().equals(existingEmployee.getName()) ||
-                 !employeeToSave.getSurname().equals(existingEmployee.getSurname()))) {
+                        !employeeToSave.getSurname().equals(existingEmployee.getSurname()))) {
             // employee with new name is already exists
             throw new EntityDuplicateException(
                     "The employee with the name " + employeeToSave.getName() + " " + employeeToSave.getSurname() +
@@ -236,8 +234,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                     roleToSave = new Role(roleDTO.getRole());
                     roleRepository.save(roleToSave);
                 }
-            }
-            else {
+            } else {
                 roleToSave = roleRepository.find(roleDTO.getId()).orElse(null);
             }
             rolesToSave.add(roleToSave);
@@ -245,8 +242,26 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeToSave.setEmployeeRoles(rolesToSave);
 
         // update user over UserService
-        UserDTO savedUserDTO = userService.updateUser(employeeToSaveDTO.getUser());
+        UserDTO userDTO = employeeToSaveDTO.getUser();
+        // set userID when not filled
+        if (userDTO.getId() == null && existingEmployee != null) {
+            userDTO.setId(existingEmployee.getUser().getId());
+        }
+        // receiving saved for user keycloak ID
+        String keycloakID = userService.getUserById(userDTO.getId()).getKeycloakId();
+        userDTO.setKeycloakId(keycloakID);
+        UserDTO savedUserDTO = userService.updateUser(userDTO);
         employeeToSave.setUser(new UserDTOToEntityConverter().convert(savedUserDTO));
+
+        // update keycloak user
+        UserKeycloakDTO userKeycloakDTO = new UserKeycloakDTO(userDTO.getLogin(),
+                userDTO.getPassword(), userDTO.getEmail(), employeeToSave.getName(), employeeToSave.getSurname());
+        List<String> roles = rolesToSave.stream()
+                .map(Role::getRole)
+                .collect(Collectors.toList());
+        userKeycloakDTO.setRoles(roles);
+        userKeycloakDTO.setKeycloakId(keycloakID);
+        UserKeycloakDTO savedUserKeycloakDTO = keycloakUserService.updateKeycloakUser(userKeycloakDTO);
 
         // saving employee
         empRepository.save(employeeToSave);

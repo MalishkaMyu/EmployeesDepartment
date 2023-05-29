@@ -7,5 +7,5 @@ public interface KeycloakUserService {
 
     UserKeycloakDTO updateKeycloakUser(UserKeycloakDTO userDTO);
 
-    void deleteKeycloakUser(String keycloakID);
+    boolean deleteKeycloakUser(String keycloakID);
 }
