@@ -49,7 +49,7 @@ public class UserControllerMockTest {
     }
 
     @Test
-    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"USER","ADMIN"}) // see test application.properties
+    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"user","admin"}) // see test application.properties
     public void testCreateUser() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         String jsonStr = mapper.writeValueAsString(testUsers.get(0));
@@ -69,7 +69,7 @@ public class UserControllerMockTest {
     }
 
     @Test
-    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"USER","ADMIN"}) // see test application.properties
+    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"user","admin"}) // see test application.properties
     public void testReadOne() throws Exception {
 
         when(userService.getUserById(3L)).thenReturn(testUsers.get(2));
@@ -86,7 +86,7 @@ public class UserControllerMockTest {
     }
 
     @Test
-    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"USER","ADMIN"}) // see test application.properties
+    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"user","admin"}) // see test application.properties
     public void testReadAll() throws Exception {
 
         when(userService.getAllUsers()).thenReturn(testUsers);
@@ -106,7 +106,7 @@ public class UserControllerMockTest {
     }
 
     @Test
-    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"USER","ADMIN"}) // see test application.properties
+    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"user","admin"}) // see test application.properties
     public void testReadAllPaged() throws Exception {
 
         when(userService.getAllUsers(0)).thenReturn(testUsers.subList(0, 2));
@@ -128,7 +128,7 @@ public class UserControllerMockTest {
     }
 
     @Test
-    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"USER","ADMIN"}) // see test application.properties
+    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"user","admin"}) // see test application.properties
     public void testUpdateUser() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         String jsonStr = mapper.writeValueAsString(testUsers.get(2));
@@ -148,7 +148,7 @@ public class UserControllerMockTest {
     }
 
     @Test
-    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"USER","ADMIN"}) // see test application.properties
+    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"user","admin"}) // see test application.properties
     public void testDeleteUser() throws Exception {
         when(userService.deleteUserById(anyLong())).thenReturn(true);
 

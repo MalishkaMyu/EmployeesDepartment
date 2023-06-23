@@ -111,7 +111,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public EmployeeDTO createEmployee(EmployeeDTO employeeToSaveDTO) {
+    public EmployeeDTO createEmployee(EmployeeDTO employeeToSaveDTO, Boolean modifyKeycloakUser) {
         Employee employeeToSave = new EmployeeDTOToEntityConverter().convert(employeeToSaveDTO);
         if (employeeToSave == null)
             return null;
@@ -165,14 +165,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         // create new keycloak user
         UserDTO userDTO = employeeToSaveDTO.getUser();
-        UserKeycloakDTO userKeycloakDTO = new UserKeycloakDTO(userDTO.getLogin(),
-                userDTO.getPassword(), userDTO.getEmail(), employeeToSave.getName(), employeeToSave.getSurname());
-        List<String> roles = rolesToSave.stream()
-                .map(Role::getRole)
-                .collect(Collectors.toList());
-        userKeycloakDTO.setRoles(roles);
-        UserKeycloakDTO savedUserKeycloakDTO = keycloakUserService.createKeycloakUser(userKeycloakDTO);
-        userDTO.setKeycloakId(savedUserKeycloakDTO.getKeycloakId());
+        if (modifyKeycloakUser) {
+            UserKeycloakDTO userKeycloakDTO = new UserKeycloakDTO(userDTO.getLogin(),
+                    userDTO.getPassword(), userDTO.getEmail(), employeeToSave.getName(), employeeToSave.getSurname());
+            List<String> roles = rolesToSave.stream()
+                    .map(Role::getRole)
+                    .collect(Collectors.toList());
+            userKeycloakDTO.setRoles(roles);
+            UserKeycloakDTO savedUserKeycloakDTO = keycloakUserService.createKeycloakUser(userKeycloakDTO);
+            userDTO.setKeycloakId(savedUserKeycloakDTO.getKeycloakId());
+        }
 
         // create new user always over UserService !!
         UserDTO savedUserDTO = userService.createUser(userDTO);
@@ -186,7 +188,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public EmployeeDTO updateEmployee(EmployeeDTO employeeToSaveDTO) {
+    public EmployeeDTO updateEmployee(EmployeeDTO employeeToSaveDTO, Boolean modifyKeycloakUser) {
         Employee employeeToSave = new EmployeeDTOToEntityConverter().convert(employeeToSaveDTO);
         if (employeeToSave == null)
             return null;
@@ -254,14 +256,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeToSave.setUser(new UserDTOToEntityConverter().convert(savedUserDTO));
 
         // update keycloak user
-        UserKeycloakDTO userKeycloakDTO = new UserKeycloakDTO(userDTO.getLogin(),
-                userDTO.getPassword(), userDTO.getEmail(), employeeToSave.getName(), employeeToSave.getSurname());
-        List<String> roles = rolesToSave.stream()
-                .map(Role::getRole)
-                .collect(Collectors.toList());
-        userKeycloakDTO.setRoles(roles);
-        userKeycloakDTO.setKeycloakId(keycloakID);
-        UserKeycloakDTO savedUserKeycloakDTO = keycloakUserService.updateKeycloakUser(userKeycloakDTO);
+        if (modifyKeycloakUser) {
+            UserKeycloakDTO userKeycloakDTO = new UserKeycloakDTO(userDTO.getLogin(),
+                    userDTO.getPassword(), userDTO.getEmail(), employeeToSave.getName(), employeeToSave.getSurname());
+            List<String> roles = rolesToSave.stream()
+                    .map(Role::getRole)
+                    .collect(Collectors.toList());
+            userKeycloakDTO.setRoles(roles);
+            userKeycloakDTO.setKeycloakId(keycloakID);
+            UserKeycloakDTO savedUserKeycloakDTO = keycloakUserService.updateKeycloakUser(userKeycloakDTO);
+        }
 
         // saving employee
         empRepository.save(employeeToSave);
@@ -271,7 +275,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public boolean deleteEmployeeById(Long employeeId) {
+    public boolean deleteEmployeeById(Long employeeId, Boolean modifyKeycloakUser) {
         if (empRepository.existsById(employeeId)) {
             // reading corresponding user
             User userToDelete = empRepository.getReferenceById(employeeId).getUser();
@@ -281,7 +285,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             if (!userService.deleteUserById(userToDelete.getId()))
                 return false;
             // deleting keycloak user
-            keycloakUserService.deleteKeycloakUser(userToDelete.getKeycloakId());
+            if (modifyKeycloakUser)
+                keycloakUserService.deleteKeycloakUser(userToDelete.getKeycloakId());
 
             return !empRepository.existsById(employeeId);
         } else

@@ -16,9 +16,9 @@ public interface EmployeeService {
 
     List<EmployeeDTO> getAllEmployees(int page);
 
-    EmployeeDTO createEmployee(EmployeeDTO employeeToSaveDTO);
+    EmployeeDTO createEmployee(EmployeeDTO employeeToSaveDTO, Boolean modifyKeycloakUser);
 
-    EmployeeDTO updateEmployee(EmployeeDTO employeeToSaveDTO);
+    EmployeeDTO updateEmployee(EmployeeDTO employeeToSaveDTO, Boolean modifyKeycloakUser);
 
-    boolean deleteEmployeeById(Long employeeId);
+    boolean deleteEmployeeById(Long employeeId, Boolean modifyKeycloakUser);
 }

@@ -81,11 +81,8 @@ public class JpaRoleDaoTest {
 
     @AfterEach
     public void tearDown() {
-        // deleting role "Programmer"
-        //jpaRoleDao.deleteById(this.id);
-        // deleting all roles except "ROLE_ADMIN" and "ROLE_USER"
+        // deleting all roles except "admin" and "user"
         jpaRoleDao.deleteAllExceptForSecurity();
         assertEquals(2, jpaRoleDao.findAll().size());
-        //assertThat(jpaRoleDao.findAll(), is(empty()));
     }
 }

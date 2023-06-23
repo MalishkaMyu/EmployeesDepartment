@@ -8,4 +8,6 @@ public interface KeycloakUserService {
     UserKeycloakDTO updateKeycloakUser(UserKeycloakDTO userDTO);
 
     boolean deleteKeycloakUser(String keycloakID);
+
+    String getKeycloakIDByLogin(String login);
 }

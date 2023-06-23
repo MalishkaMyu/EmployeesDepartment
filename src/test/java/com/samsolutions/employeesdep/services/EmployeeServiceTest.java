@@ -81,7 +81,7 @@ public class EmployeeServiceTest {
         empToSave.setUser(userToSave);
         empToSave.setDepartment(depart1);
         empToSave.setEmployeeRoles(roles1);
-        savedEmp = empService.createEmployee(empToSave);
+        savedEmp = empService.createEmployee(empToSave, false);
         if (savedEmp.getId() != null) {
             listIDs.add(savedEmp.getId());
             depart1 = savedEmp.getDepartment();
@@ -96,7 +96,7 @@ public class EmployeeServiceTest {
         empToSave.setUser(userToSave);
         empToSave.setDepartment(depart1);
         empToSave.setEmployeeRoles(roles2);
-        savedEmp = empService.createEmployee(empToSave);
+        savedEmp = empService.createEmployee(empToSave, false);
         if (savedEmp.getId() != null) {
             listIDs.add(savedEmp.getId());
             updateRoles(allRoles, savedEmp.getEmployeeRoles());
@@ -111,7 +111,7 @@ public class EmployeeServiceTest {
         empToSave.setUser(userToSave);
         empToSave.setDepartment(depart2);
         empToSave.setEmployeeRoles(roles3);
-        savedEmp = empService.createEmployee(empToSave);
+        savedEmp = empService.createEmployee(empToSave, false);
         if (savedEmp.getId() != null) {
             listIDs.add(savedEmp.getId());
             updateRoles(allRoles, savedEmp.getEmployeeRoles());
@@ -161,7 +161,7 @@ public class EmployeeServiceTest {
             UserDTO userToSave = empToSave.getUser();
             userToSave.setPassword("newpinpassword");
             empToSave.setUser(userToSave);
-            EmployeeDTO savedEmployee = empService.updateEmployee(empToSave);
+            EmployeeDTO savedEmployee = empService.updateEmployee(empToSave, false);
             assertEquals("Penguin", savedEmployee.getSurname());
             assertTrue(encoder.matches("newpinpassword", savedEmployee.getUser().getPasswordHash()));
             assertEquals(2, savedEmployee.getEmployeeRoles().size());
@@ -177,7 +177,7 @@ public class EmployeeServiceTest {
             empToSave.setName("Nyusha");
             empToSave.setSurname("Smesharik");
             assertThrows(EntityDuplicateException.class, () ->
-                empService.updateEmployee(empToSave),
+                empService.updateEmployee(empToSave, false),
                 "EntityDuplicateException was expected.");
         }
     }
@@ -185,7 +185,7 @@ public class EmployeeServiceTest {
     @AfterEach
     public void tearDown() {
         for (Long id : listIDs) {
-            assertTrue(empService.deleteEmployeeById(id));
+            assertTrue(empService.deleteEmployeeById(id, false));
         }
         listIDs.clear();
         // delete all users except "admin"

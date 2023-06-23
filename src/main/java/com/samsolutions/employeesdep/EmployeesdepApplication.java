@@ -56,12 +56,15 @@ public class EmployeesdepApplication {
                 String generatedPassword = RandomStringUtils.random(length, useLetters, useNumbers);
                 System.out.println("Remember generated password for user '" + adminLogin + "':" + generatedPassword);
 
-                // create keycloak user for 'admin'
-                UserKeycloakDTO userKeycloakDTO = new UserKeycloakDTO(adminLogin,
-                        generatedPassword, adminEmail, "Admin","Admin");
-                userKeycloakDTO.setRoles(Collections.singletonList("admin"));
-                UserKeycloakDTO savedUserKeycloakDTO = keycloakUserService.createKeycloakUser(userKeycloakDTO);
-                String adminKeycloakId = savedUserKeycloakDTO.getKeycloakId();
+                // create keycloak user for 'admin', if not exists
+                String adminKeycloakId = keycloakUserService.getKeycloakIDByLogin(adminLogin);
+                if (adminKeycloakId == null) {
+                    UserKeycloakDTO userKeycloakDTO = new UserKeycloakDTO(adminLogin,
+                            generatedPassword, adminEmail, "Admin", "Admin");
+                    userKeycloakDTO.setRoles(Collections.singletonList("admin"));
+                    UserKeycloakDTO savedUserKeycloakDTO = keycloakUserService.createKeycloakUser(userKeycloakDTO);
+                    adminKeycloakId = savedUserKeycloakDTO.getKeycloakId();
+                }
 
                 // saving admin user with password and keycloak-id
                 String passwordHash = encoder.encode(generatedPassword);

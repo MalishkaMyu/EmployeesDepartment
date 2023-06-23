@@ -27,6 +27,7 @@ import java.util.Set;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -137,14 +138,14 @@ public class EmployeeControllerMockTest {
     }
 
     @Test
-    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"USER","ADMIN"}) // see test application.properties
+    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"user","admin"}) // see test application.properties
     public void testCreateEmployee() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         String jsonStr = mapper.writeValueAsString(testEmps.get(0));
 
-        when(empService.createEmployee(any(EmployeeDTO.class))).thenReturn(testEmps.get(0));
+        when(empService.createEmployee(any(EmployeeDTO.class), anyBoolean())).thenReturn(testEmps.get(0));
 
         mockMvc.perform(
                         post("/api/admin/employees")
@@ -157,18 +158,18 @@ public class EmployeeControllerMockTest {
                 .andExpect(jsonPath("$.surname", is("Smesharik")))
                 .andExpect(jsonPath("$.department.name", is("Java Department")))
                 .andExpect(jsonPath("$.employeeRoles.size()", is(3)));
-        verify(empService).createEmployee(any(EmployeeDTO.class));
+        verify(empService).createEmployee(any(EmployeeDTO.class), anyBoolean());
     }
 
     @Test
-    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"USER","ADMIN"}) // see test application.properties
+    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"user","admin"}) // see test application.properties
     public void testUpdateEmployee() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         String jsonStr = mapper.writeValueAsString(testEmps.get(2));
 
-        when(empService.updateEmployee(any(EmployeeDTO.class))).thenReturn(testEmps.get(2));
+        when(empService.updateEmployee(any(EmployeeDTO.class), anyBoolean())).thenReturn(testEmps.get(2));
 
         mockMvc.perform(
                         put("/api/admin/employees/3")
@@ -181,7 +182,7 @@ public class EmployeeControllerMockTest {
                 .andExpect(jsonPath("$.surname", is("Smesharik")))
                 .andExpect(jsonPath("$.department.name", is(".NET Department")))
                 .andExpect(jsonPath("$.employeeRoles.size()", is(1)));
-        verify(empService).updateEmployee(any(EmployeeDTO.class));
+        verify(empService).updateEmployee(any(EmployeeDTO.class), anyBoolean());
     }
 
     @Test
@@ -192,7 +193,7 @@ public class EmployeeControllerMockTest {
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         String jsonStr = mapper.writeValueAsString(testEmps.get(2));
 
-        when(empService.updateEmployee(any(EmployeeDTO.class))).thenReturn(testEmps.get(2));
+        when(empService.updateEmployee(any(EmployeeDTO.class), anyBoolean())).thenReturn(testEmps.get(2));
 
         mockMvc.perform(
                         put("/api/admin/employees/3")
@@ -203,15 +204,15 @@ public class EmployeeControllerMockTest {
     }
 
     @Test
-    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"USER","ADMIN"}) // see test application.properties
+    @WithMockUser(username = "test_user", password = "test_pwd", roles = {"user","admin"}) // see test application.properties
     public void testDeleteEmployee() throws Exception {
-        when(empService.deleteEmployeeById(anyLong())).thenReturn(true);
+        when(empService.deleteEmployeeById(anyLong(), anyBoolean())).thenReturn(true);
 
         mockMvc.perform(
                         delete("/api/admin/employees/2")
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        verify(empService).deleteEmployeeById(anyLong());
+        verify(empService).deleteEmployeeById(anyLong(), anyBoolean());
     }
 
     @AfterEach

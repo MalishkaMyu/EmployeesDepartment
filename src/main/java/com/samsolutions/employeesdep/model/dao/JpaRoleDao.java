@@ -82,7 +82,7 @@ public class JpaRoleDao implements Dao<Role> {
 
     @Transactional
     public int deleteAllExceptForSecurity() {
-        Query query = entityManager.createQuery("DELETE from Role r where role not in ('ROLE_ADMIN','ROLE_USER')");
+        Query query = entityManager.createQuery("DELETE from Role r where role not in ('admin','user')");
         return query.executeUpdate();
     }
 

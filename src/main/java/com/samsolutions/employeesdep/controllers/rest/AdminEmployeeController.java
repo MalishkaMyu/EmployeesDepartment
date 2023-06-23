@@ -26,7 +26,7 @@ public class AdminEmployeeController {
         DecodedJWT jwt = JWT.decode(JwtToken);
         String keycloakID = jwt.getSubject();*/
 
-        final EmployeeDTO createdEmp = employeeService.createEmployee(employee);
+        final EmployeeDTO createdEmp = employeeService.createEmployee(employee, true);
         return createdEmp != null
                 ? new ResponseEntity<>(createdEmp, HttpStatus.CREATED)
                 : new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -36,7 +36,7 @@ public class AdminEmployeeController {
     @PutMapping(value = "/{id}")
     public ResponseEntity<EmployeeDTO> update(@PathVariable(name = "id") Long id, @RequestBody EmployeeDTO employee) {
         employee.setId(id);
-        final EmployeeDTO updatedEmp = employeeService.updateEmployee(employee);
+        final EmployeeDTO updatedEmp = employeeService.updateEmployee(employee, true);
         return updatedEmp != null
                 ? new ResponseEntity<>(updatedEmp, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -44,7 +44,7 @@ public class AdminEmployeeController {
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
-        final boolean deleted = employeeService.deleteEmployeeById(id);
+        final boolean deleted = employeeService.deleteEmployeeById(id, true);
         return deleted
                 ? new ResponseEntity<>(HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);

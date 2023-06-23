@@ -152,4 +152,16 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
 
         return response.getStatusInfo().equals(Response.Status.NO_CONTENT);
     }
+
+    @Override
+    public String getKeycloakIDByLogin(String login) {
+        // read keycloak user to the keycloak-id
+        RealmResource realmResource = keycloakServiceAccount.realm(kcRealm);
+        List<UserRepresentation> users = realmResource.users().search(login);
+        if (users != null && users.size() > 0)
+            return users.get(0).getId();
+        else
+            return null;
+
+    }
 }
